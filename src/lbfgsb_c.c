@@ -55,7 +55,7 @@ void lbfgsb_C(int n, double *x, double *l, double *u, lbfgsb_fmin fun,
   itask = 2;
   factr = 1.0e7;
   nbd = new_fill_ivec(n, 2);
-  wa = new_vector(2*m*n + 5*n + 11*m*m + 8*m);
+  wa = new_zero_vector(2*m*n + 5*n + 11*m*m + 8*m);
   iwa = new_ivector(3 * n);
   g = new_vector(n);
 

@@ -7,7 +7,7 @@
 \code{X0}, training set \code{design} and response matrix \code{resp}. The
 local neighbourhood sets consist of \code{nn} points which are selected
 by the Euclidean distance with respect to the test points. See Zhang et
-al. (2017) for details.}
+al. (2018) for details.}
 
 \usage{
 knnsvdGP(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,

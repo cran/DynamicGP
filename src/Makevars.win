@@ -1,3 +1,0 @@
-PKG_CFLAGS = -I include -DRPRINT
-PKG_CXXFLAGS = -I include
-PKG_LIBS = ${LAPACK_LIBS} ${BLAS_LIBS} ${FLIBS}

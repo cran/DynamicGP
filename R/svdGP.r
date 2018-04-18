@@ -49,12 +49,12 @@ buildBasis <- function(response,percent=.9,numbas=NULL)
 svdGP <- function(design,resp,X0=design,nstarts=5,d=NULL,gstart=0.0001,
                   frac=.9,centralize=FALSE,nthread=4,clutype="PSOCK")
 {
-    if(.Platform$r_arch=="i386")
+    if(.Machine$sizeof.pointer != 8)
     {
-        cat("the current version does not support 32bit architecture, exit\n")
+        cat("the current version only supports 64-bit version of R\n")
         return(NULL)
     }
-	lenresp <- length(resp)
+    lenresp <- length(resp)
     if(centralize)
     {
         rmean <- apply(resp,1,mean)

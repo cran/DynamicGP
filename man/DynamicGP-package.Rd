@@ -16,7 +16,7 @@
   neighbor SVD-based GP models which selects neighborhood sets based on
   the Euclidean distance with repect to the test points. The function
   \code{lasvdGP} fits local approximate SVD-based GP model using the
-  new algorithm proposed by Zhang et al. (2017).
+  new algorithm proposed by Zhang et al. (2018).
 
   The lasvdGP is an extension of the local approximate GP (laGP) model
   developed by Gramacy and Lee (2015) for the emulation of large-scale

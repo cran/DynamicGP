@@ -11,7 +11,7 @@
   which \code{n0} points are selected by the Euclidean distance with
   respect to the test points. The remaining \code{nn}-\code{n0}
   neighborhood points are selected sequentially by a greedy algorithm
-  proposed by Zhang et al. (2017).}
+  proposed by Zhang et al. (2018).}
 
 \usage{
 lasvdGP(design, resp, X0=design, n0=10, nn=20,

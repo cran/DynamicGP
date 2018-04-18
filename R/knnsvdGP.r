@@ -2,9 +2,9 @@ knnsvdGP <- function(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
                      gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100, verb=0,
                      nthread = 4, clutype="PSOCK")
 {
-    if(.Platform$r_arch=="i386")
+    if(.Machine$sizeof.pointer != 8)
     {
-        cat("the current version does not support 32bit architecture, exit\n")
+        cat("the current version only supports 64-bit version of R\n")
         return(NULL)
     }
     if(!is.matrix(design)) stop("design must be a matrix")

@@ -15,31 +15,6 @@ Copyright: 2005, University of California
 Author(s): Robert B. Gramacy <rbg@vt.edu>, Nicolas Devillard
 Licence: GPL>=2.1
 
-Files: src/maximinLHS.cpp src/utilityLHS.cpp src/include/CRandom.h src/include/CommonDefines.hpp
-       src/include/matrix.hpp src/include/order.hpp src/include/utilityLHS.hpp
-Copyright: 2014, Robert Carnell
-Licence: LGPL-3
-
-Files: src/include/arithmetic_ansi.h src/include/arithmetic_sse_double.h src/include/arithmetic_sse_float.h
-Copyright: 2007-2010, Naoaki Okazaki
-Licence: Permission is hereby granted, free of charge, to any person obtaining a copy
-	 of this software and associated documentation files (the "Software"), to deal
-	 in the Software without restriction, including without limitation the rights
-	 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	 copies of the Software, and to permit persons to whom the Software is
-	 furnished to do so, subject to the following conditions:
-
-	 The above copyright notice and this permission notice shall be included in
-	 all copies or substantial portions of the Software.
-
-	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-	 THE SOFTWARE.
-
 Files: src/lbfgsb.f
 Author(s): Ciyou Zhu, Richard Byrd, Peihuang Lu-Chen, Jorge Nocedal, Jose Luis Morales
 Licence: Condition for Use: This software is freely available, but we expect that all
