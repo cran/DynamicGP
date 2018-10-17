@@ -26,11 +26,12 @@
 #include <assert.h>
 #include "linalg.h"
 #include "matrix.h"
-#include "rhelp.h"
 
 #ifdef FORTPACK
 char uplo = 'U';
 #endif
+
+const char jobz = 'S';
 /* #define DEBUG */
 
 /*
@@ -234,12 +235,12 @@ double **Mutil, **Mi;
   info = clapack_dposv(CblasRowMajor,CblasLower,n,n,*Mutil,n,*Mi,n);
 #endif
   
-#ifdef DEBUG
-  if(info != 0) {
-    matrix_to_file("M.dump", Mutil, n, n);
-    error("offending matrix dumped into matrix.dump");
-  }
-#endif
+/* #ifdef DEBUG */
+/*   if(info != 0) { */
+/*     matrix_to_file("M.dump", Mutil, n, n); */
+/*     error("offending matrix dumped into matrix.dump"); */
+/*   } */
+/* #endif */
   
   return (int) info;
 }
@@ -400,3 +401,69 @@ double theta;
 #endif
 
 
+int linalg_dgesdd(double **X, int nrow, int ncol,
+		   double *s, double *u, double **vt)
+{
+  int info = 0, lwork = -1;
+  int nsv = nrow<ncol? nrow : ncol;
+  int *iwork = (int *) malloc(8*(size_t)(nsv)*sizeof(int));
+  double tmp, *work;
+
+  dgesdd(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
+	 *vt,&nsv,&tmp,&lwork,iwork, &info);
+  if(info != 0) return info;
+  
+  lwork = (int) tmp;
+
+  work = (double*) malloc(lwork * sizeof(double));
+
+  dgesdd(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
+	 *vt,&nsv,work,&lwork,iwork,&info);
+  free(work);
+  free(iwork);
+  return info;
+}
+
+void linalg_dtrmv(const enum CBLAS_UPLO up, const enum CBLAS_TRANSPOSE tr,
+		  const enum CBLAS_DIAG diag, int n, double **A, int lda,
+		  double *x, int incx)
+{
+  char uplo, trans, isdiag;
+  uplo = (up==CblasUpper)? 'U':'L';
+  trans = (tr==CblasTrans)? 'T':'N';
+  isdiag = (diag==CblasUnit)? 'U':'N';
+  dtrmv(&uplo, &trans, &isdiag, &n, *A, &lda, x, &incx);
+}
+void linalg_dtrsm(const enum CBLAS_SIDE side, const enum CBLAS_UPLO up,
+		  const enum CBLAS_TRANSPOSE tr, enum CBLAS_DIAG diag,
+		  int m, int n, double alpha, double **A, int lda,
+		  double *b, int ldb)
+{
+  char isleft, uplo, trans, isdiag;
+  isleft = (side==CblasLeft)? 'L': 'R';
+  uplo = (up==CblasUpper)? 'U':'L';
+  trans = (tr==CblasTrans)? 'T':'N';
+  isdiag = (diag==CblasUnit)? 'U':'N';
+  dtrsm(&isleft, &uplo, &trans, &isdiag, &m, &n, &alpha, *A, &lda, b, &ldb);
+}
+
+int linalgext_dposv(n, m, Mutil, Mi)
+  int n, m;
+  double **Mutil, **Mi;
+{
+  long info;
+	
+  /* then use LAPACK */
+#ifdef FORTPACK
+  size_t n64;
+  size_t m64;
+  n64 = n;
+  m64 = m;
+  dposv(&uplo,&n64,&m64,*Mutil,&n64,*Mi,&n64,&info);
+#else
+  /*info = clapack_dposv(CblasColMajor,CblasUpper,n,n,*Mutil,n,*Mi,n);*/
+  info = clapack_dposv(CblasRowMajor,CblasLower,n,m,*Mutil,n,*Mi,n);
+#endif
+  
+  return (int) info;
+}

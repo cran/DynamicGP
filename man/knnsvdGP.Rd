@@ -4,15 +4,17 @@
 \title{K-nearest neighbor SVD-Based GP model}
 
 \description{Fits a K-nearest neighbour SVD-based GP model on a test set
-\code{X0}, training set \code{design} and response matrix \code{resp}. The
-local neighbourhood sets consist of \code{nn} points which are selected
-by the Euclidean distance with respect to the test points. See Zhang et
-al. (2018) for details.}
+  \code{X0}, training set \code{design} and response matrix \code{resp}. The
+  local neighbourhood sets consist of \code{nn} points which are selected
+  by the Euclidean distance with respect to the test points. See Zhang et
+  al. (2018) for details.This function supports the
+  parallelization via both the R packages "parallel" and the OpenMP
+  library.}
 
 \usage{
-knnsvdGP(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
-         gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100, verb=0,
-         nthread = 4, clutype="PSOCK")
+knnsvdGP(design,resp, X0=design, nn=20, nsvd = nn, frac = .95,
+         gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100,
+         errlog = "", nthread = 1, clutype="PSOCK")
 }
 
 \arguments{
@@ -38,13 +40,14 @@ knnsvdGP(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
   }
   \item{frac}{
     The threshold in the cumulative percentage criterion to select the
-    number of SVD bases. The default value is 0.9.
+    number of SVD bases. The default value is 0.95.
   }
   \item{gstart}{
-    The starting number and upper bound of for estimating the nugget
+    The starting number and upper bound for estimating the nugget
     parameter. If \code{gstart = sqrt(.Machine$double.eps)}, the nugget
-    will be fixed at \code{sqrt(.Machine$double.eps)}, since the it is
-    the lower bound of the nugget term. The default value is 0.0001.
+    parameter will be fixed at \code{sqrt(.Machine$double.eps)}, since
+    \code{sqrt(.Machine$double.eps)} is the lower bound of the nugget
+    term. The default value is 0.0001.
   }
   \item{nstarts}{
     The number of starting points used in the numerical maximization of
@@ -63,20 +66,21 @@ knnsvdGP(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
     for maximizing the posterior density function. The default value is
     100.
   }
-  \item{verb}{
-    A nonnegative integer indicates the level of printing on the
-    screen. If \code{verb=0} the function is executed in silence. The
-    default value is 0.
+  \item{errlog}{
+    The path of a log file that records the errors occur in the process of fitting
+    local SVD-based GP models. If an empty string is provided, no log file will be
+    produced.
   }
   \item{nthread}{
     The number of threads (processes) used in parallel execution of this
     function. \code{nthread=1} implies no parallelization. The default
-    value is 4.
+    value is 1.
   }
   \item{clutype}{
-    The type of cluster in the R package "parallel" to perform
-    parallelization. The default value is "PSOCK". Required only if
-    \code{nthread}>1.
+    The type of parallization utilized by this function. If \code{clutype="OMP"},
+    it will use the OpenMP parallelization. Otherwise, it indicates the
+    type of cluster in the R package "parallel" . The default value is "PSOCK".
+    Required only if \code{nthread}>1.
   }
 }
 
@@ -89,19 +93,28 @@ knnsvdGP(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
     An \eqn{L} by \eqn{M} matrix of posterior predicted variance for the response at
     the test set \code{X0}.
   }
+  \item{flags}{
+    A vector of integers of length \eqn{M} which indicates the status for fitting the
+    local SVD-based GP models for each of the \eqn{M} input points in the test set.
+    The value \eqn{0} indicates successful fitting, the value \eqn{1} indicates an
+    error in Cholesky decomposition of the correlation matrices, the value \eqn{2}
+    indicates an error in SVD of the local response matrix, the value \eqn{3} indicates
+    an error in optimizing the nugget term.
+  }
 }
 
 \author{Ru Zhang \email{heavenmarshal@gmail.com},
 
   C. Devon Lin \email{devon.lin@queensu.ca},
 
-  Pritam Ranjan \email{pritam.ranjan@gmail.com}}
+  Pritam Ranjan \email{pritamr@iimidr.ac.in}}
 
 \seealso{\code{\link{lasvdGP}}, \code{\link{svdGP}}.}
 
-\references{Zhang, R., Lin, C. D. and Ranjan, P. (2018) \emph{Local
-    Gaussian Process Model for Large-scale Dynamic Computer
-    Experiments}, arXiv:1611.09488.}
+\references{Zhang, R., Lin, C. D. and Ranjan, P. (2018) \emph{Local Gaussian
+    Process Model for Large-scale Dynamic Computer Experiments},
+  Journal of Computational and Graphical Statistics, \cr DOI:
+  10.1080/10618600.2018.1473778.}
 
 \examples{
 library("lhs")
@@ -116,11 +129,13 @@ forretal <- function(x,t,shift=1)
 timepoints <- seq(0,1,len=200)
 design <- lhs::randomLHS(100,3)
 test <- lhs::randomLHS(20,3)
+
 ## evaluate the response matrix on the design matrix
 resp <- apply(design,1,forretal,timepoints)
 
 nn <- 20
 gs <- sqrt(.Machine$double.eps)
+
 ## knnsvdGP with mutiple (5) start points for GP model estimation
 ## It use the R package "parallel" for parallelization
 retknnmsp <- knnsvdGP(design,resp,test,nn,frac=.95,gstart=gs,

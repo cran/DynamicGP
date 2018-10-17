@@ -2,7 +2,6 @@
 #include<string.h>
 #include "lbfgsb.h"
 #include "matrix.h"
-#include "rhelp.h"
 
 static int* new_fill_ivec(int n, int fill)
 {
@@ -79,9 +78,9 @@ void lbfgsb_C(int n, double *x, double *l, double *u, lbfgsb_fmin fun,
     }
     else if(itask == 1){	/* newx */
       iter++;
-      if(trace == 1 && (iter % 10 == 0)){
-	MYprintf(MYstdout,"iter %4d value %f\n", iter, f);
-      }
+      /* if(trace == 1 && (iter % 10 == 0)){ */
+      /* 	MYprintf(MYstdout,"iter %4d value %f\n", iter, f); */
+      /* } */
       if(iter > maxit) {
 	*fail = 1;
 	break;
@@ -106,11 +105,11 @@ void lbfgsb_C(int n, double *x, double *l, double *u, lbfgsb_fmin fun,
   counts[0] = counts[1] = isave[33]; /* total numer of function evals */
   writemsg(itask,msg);
   f = fun(n, x, info);		/* set the optimal value */
-  if(trace){
-    MYprintf(MYstdout,"final value %f \n", f);
-    if(iter < maxit && *fail == 0) MYprintf(MYstdout,"converged\n");
-    else MYprintf(MYstdout,"stopped after %i iterations\n", iter);
-  }
+  /* if(trace){ */
+  /*   MYprintf(MYstdout,"final value %f \n", f); */
+  /*   if(iter < maxit && *fail == 0) MYprintf(MYstdout,"converged\n"); */
+  /*   else MYprintf(MYstdout,"stopped after %i iterations\n", iter); */
+  /* } */
   free(wa);
   free(iwa);
   free(nbd);

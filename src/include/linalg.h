@@ -26,7 +26,6 @@
 #define __LINALG_H__ 
 
 #include "matrix.h"
-#include "rhelp.h"
 
 #ifndef CBLAS_ENUM_DEFINED_H
    #define CBLAS_ENUM_DEFINED_H
@@ -82,6 +81,21 @@ extern double ddot(size_t*, double*, size_t*, double*, size_t*);
 extern void daxpy(size_t*, double*, double*, size_t*, double*, size_t*);
 #define dtrsv dtrsv_
 extern void dtrsv(char*, char*, char*, int*, double*, int*, double*, int*);
+
+#define dtrmv dtrmv_
+extern void dtrmv(char* uplo, char* trans, char* diag,
+		  int *n, double* a, int *lda, double *x,
+		  int *incx);
+#define dtrsm dtrsm_
+extern void dtrsm(char* side, char* uplo, char* transa, char* diag,
+		  int* m, int *n, double *alpha, double* a, int *lda,
+		  double *b, int *ldb);
+#define dgesdd dgesdd_
+extern void dgesdd (const char *jobz,const int *m, const int *n,
+		    double *a, const int *lda, double *s, double *u, const int *ldu,
+		    double *vt, const int *ldvt, double *work, const int *lwork,
+		    int *iwork, int *info);
+
 #else
 #include <cblas.h>
 #endif
@@ -109,6 +123,15 @@ int linalg_dpotrf(int n, double **var);
 
 /* iterative */
 int solve_cg_symm(double *x, double *x_star, double **A, double *b, double theta, unsigned int n);
+void linalg_dtrmv(const enum CBLAS_UPLO up, const enum CBLAS_TRANSPOSE tr,
+		  const enum CBLAS_DIAG diag, int n, double **A, int lda,
+		  double *x, int incx);
+void linalg_dtrsm(const enum CBLAS_SIDE side, const enum CBLAS_UPLO up,
+		  const enum CBLAS_TRANSPOSE tr, enum CBLAS_DIAG diag,
+		  int m, int n, double alpha, double **A, int lda,
+		  double *b, int ldb);
 
+int linalg_dgesdd(double **, int, int, double *, double *, double **);
+int linalgext_dposv(int n, int m, double **Mutil, double **Mi);
 #endif
 

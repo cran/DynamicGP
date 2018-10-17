@@ -27,6 +27,9 @@
 #include <float.h>
 #include "util.h"
 #include "matrix.h"
+#include "linalg.h"
+#include <assert.h>
+#include <Rmath.h>
 
 #define DOUBLE_EPS     DBL_EPSILON
 /*
@@ -152,4 +155,145 @@ double Brent_fmin(double ax, double bx, double (*f)(double, void *),
     /* end of main loop */
 
     return x;
+}
+
+/*
+ * calc_alc:
+ *
+ * function that iterates over the m Xref locations, and the
+ * stats calculated by previous calc_* function in order to 
+ * calculate the reduction in variance
+ */
+
+double calc_alc(const int m, double *ktKik, double *s2p, const double phi, 
+		double *badj, const double tdf, double *w)
+{
+  int i;
+  double zphi, ts2, alc, dfrat;
+  
+  dfrat = tdf/(tdf - 2.0);
+  alc = 0.0;
+  for(i=0; i<m; i++) {
+    zphi = (s2p[1] + phi)*ktKik[i];
+    if(badj) ts2 = badj[i] * zphi / (s2p[0] + tdf);
+    else ts2 = zphi / (s2p[0] + tdf);
+    if(w) alc += w[i]*dfrat*ts2;
+    else alc += ts2*dfrat; 
+  }
+
+  return (alc/m);
+}
+
+
+/*
+ * calc_ktKikx:
+ *
+ * function for calculating the ktKikx vector used in the
+ * IECI calculation -- writes over the KtKik input --
+ * R interface (calc_ktKikx_R) available in plgp source tree
+ */
+
+void calc_ktKikx(double *ktKik, const int m, double **k, const int n,
+		 double *g, const double mui, double *kxy, double **Gmui,
+		 double *ktGmui, double *ktKikx)
+{
+  int i;
+  // double **Gmui;
+  // double *ktGmui;
+
+  /* first calculate Gmui = g %*% t(g)/mu */
+  // if(!Gmui_util) Gmui = new_matrix(n, n);
+  // else Gmui = Gmui_util;
+  if(Gmui) {
+    linalg_dgemm(CblasNoTrans,CblasTrans,n,n,1,
+               mui,&g,n,&g,n,0.0,Gmui,n);
+    assert(ktGmui);
+  }
+
+  /* used in the for loop below */
+  // if(!ktGmui_util) ktGmui = new_vector(n);
+  // else ktGmui = ktGmui_util;
+  if(ktGmui) assert(Gmui);
+
+  /* loop over all of the m candidates */
+  for(i=0; i<m; i++) {
+
+    /* ktGmui = drop(t(k) %*% Gmui) */
+    /* zerov(ktGmui, n); */
+    if(Gmui) { 
+      linalg_dsymv(n,1.0,Gmui,n,k[i],1,0.0,ktGmui,1);
+
+      /* ktKik += diag(t(k) %*% (g %*% t(g) * mui) %*% k) */
+      if(ktKik) ktKikx[i] = ktKik[i] + linalg_ddot(n, ktGmui, 1, k[i], 1);
+      else ktKikx[i] = linalg_ddot(n, ktGmui, 1, k[i], 1);
+    } else {
+      if(ktKik) ktKikx[i] = ktKik[i] + sq(linalg_ddot(n, k[i], 1, g, 1))*mui;
+      else ktKikx[i] = sq(linalg_ddot(n, k[i], 1, g, 1))*mui;
+    }
+
+    /* ktKik.x += + 2*diag(kxy %*% t(g) %*% k) */
+    ktKikx[i] += 2.0*linalg_ddot(n, k[i], 1, g, 1)*kxy[i];
+
+    /* ktKik.x + kxy^2/mui */
+    ktKikx[i] += sq(kxy[i])/mui;
+  }
+
+  /* clean up */
+  // if(!ktGmui_util) free(ktGmui);
+  // if(!Gmui_util) delete_matrix(Gmui);
+}
+
+/*
+ * Cgamma:
+ *
+ * (complete) gamma function and its logarithm (all logarithms are base 10)
+ * from UCS
+ */
+
+double Cgamma(const double a, const int ulog)
+{
+  double r;
+  if(ulog) r = lgammafn(a) / M_LN10;
+  else r = gammafn(a);
+  /* MYprintf(MYstdout, "Cgamma: a=%g, ulog=%d, r=%g\n", a, ulog, r); */
+  assert(!isnan(r));
+  return(r);
+}
+
+
+/*
+ * Rgamma_inv:
+ *
+ * regularized gamma inverse function from UCS
+ */
+
+double Rgamma_inv(const double a, const double y, const int lower,
+                  const int ulog)
+{
+  double r;
+  if(ulog) r = qgamma(y*M_LN10, a, /*scale=*/ 1.0, lower, ulog);
+  else r = qgamma(y, a, /*scale=*/ 1.0, lower, ulog);
+  /*MYprintf(MYstdout, "Rgamma_inv: a=%g, y=%g, lower=%d, ulog=%d, r=%g\n",
+    a, y, lower, ulog, r); */
+  assert(!isnan(r));
+  return(r);
+}
+
+
+/*
+ * Igamma_inv:
+ *
+ * incomplete gamma inverse function from UCS
+ */
+
+double Igamma_inv(const double a, const double y, const int lower,
+                  const int ulog)
+{
+  double r;
+  if(ulog) r = Rgamma_inv(a, y - Cgamma(a, ulog), lower, ulog);
+  else r = Rgamma_inv(a, y / Cgamma(a, ulog), lower, ulog);
+  assert(!isnan(r));
+  /* MYprintf(MYstdout, "Rgamma_inv: a=%g, y=%g, lower=%d, ulog=%d, r=%g\n",
+     a, y, lower, ulog, r); */
+  return(r);
 }

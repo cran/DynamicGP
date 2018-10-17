@@ -169,3 +169,24 @@ void calc_g_mui_kxy_sep(const int col, double *x, double **X,
   mu_neg = 0.0 - 1.0/(*mui);
   for(i=0; i<n; i++) gvec[i] *= mu_neg;
 }
+
+void distance(double **X1, const unsigned int n1, double **X2,
+	      const unsigned int n2, const unsigned int m,
+	      double **D)
+{
+  unsigned int i,j,k;
+
+  /* for each row of X1 and X2 */
+  for(i=0; i<n1; i++) {
+    for(j=0; j<n2; j++) {
+
+      /* sum the squared entries */
+      D[i][j] = 0.0;
+      for(k=0; k<m; k++) {
+	      D[i][j] += sq(X1[i][k] - X2[j][k]);
+      }
+
+    }
+  }
+}
+

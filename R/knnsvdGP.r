@@ -1,6 +1,6 @@
-knnsvdGP <- function(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
-                     gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100, verb=0,
-                     nthread = 4, clutype="PSOCK")
+knnsvdGP <- function(design, resp, X0=design, nn=20, nsvd = nn, frac = .95,
+                     gstart = 0.0001, nstarts = 5,centralize=FALSE, maxit=100,
+                     errlog = "", nthread = 1, clutype="PSOCK")
 {
     if(.Machine$sizeof.pointer != 8)
     {
@@ -19,26 +19,17 @@ knnsvdGP <- function(design, resp, X0=design, nn=20, nsvd = nn, frac = .9,
     if(!is.matrix(X0)) X0 <- matrix(X0,ncol=m)
     if(ncol(X0) != m) stop("dimensions of design and prediction set are not consistent")
     M <- nrow(X0)
-    if(nthread > 1)
+    if(centralize)
     {
-        if(nstarts > 1)
-            ret <- lasvdgpmsParal(X0,design,resp,nn,nn,frac=frac,gstart=gstart,
-                                  nstarts=nstarts,centralize=centralize,maxit=maxit,
-                                  verb=verb,nthread=nthread,clutype=clutype)
-        else
-            ret <- lasvdgpParal(X0,design,resp,nn,nn,frac=frac,gstart=gstart,
-                                centralize=centralize,maxit=maxit,verb=verb,
-                                nthread=nthread,clutype=clutype)
+        rmean <- apply(resp,1,mean)
+        resp <- (resp-rmean)
     }
-    else
-    {
-        if(nstarts > 1)
-            ret <- lasvdgpms(X0,design,resp,nn,nn,frac=frac,gstart=gstart,
-                             nstarts=nstarts,centralize=centralize,maxit=maxit,
-                             verb=verb)
-        else
-            ret <- lasvdgpWorker(X0,design,resp,nn,nn,frac=frac,gstart=gstart,
-                                 centralize=centralize,maxit=maxit,verb=verb)
-    }
+    mssuf <- if(nstarts>1) "ms" else ""
+    clsuf <- if(nthread <= 1) "" else if(clutype != "OMP") "Paral" else "OMP"
+    workerstr <- paste("lasvdgp",mssuf,clsuf,sep="")
+    workerfun <- get(workerstr)
+    ret <- workerfun(X0,design,resp,nn,nn,frac=frac,gstart=gstart,nstarts=nstarts,
+                     maxit=maxit,verb=0,errlog=errlog,nthread=nthread,clutype=clutype)
+    if(centralize) ret$pmean <- ret$pmean+rmean
     return(ret)
 }

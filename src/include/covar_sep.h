@@ -14,5 +14,7 @@ void calc_g_mui_kxy_sep(const int col, double *x, double **X,
         const int n, double **Ki, double **Xref, 
         const int m, double *d, double g, double *gvec, 
         double *mui, double *kx, double *kxy);
+void distance(double **X1, const unsigned int n1, double **X2,
+			const unsigned int n2, const unsigned int m, double **D);
 
 #endif

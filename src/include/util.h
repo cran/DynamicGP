@@ -25,9 +25,16 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-#define SDEPS sqrt(DOUBLE_EPS)
+/* #define SDEPS sqrt(DOUBLE_EPS) */
 
 double log_determinant_chol(double **M, const unsigned int n);
 double Brent_fmin(double ax, double bx, double (*f)(double, void *),
       void *info, double tol);
+double calc_alc(const int m, double *ktKik, double *s2p, const double phi, 
+		double *badj, const double tdf, double *w);
+void calc_ktKikx(double *ktKik, const int m, double **k, const int n,
+		 double *g, const double mui, double *kxy, double **Gmui_util,
+		 double *ktGmui_util, double *ktKikx);
+double Igamma_inv(const double a, const double y, const int lower,
+                  const int ulog);
 #endif
