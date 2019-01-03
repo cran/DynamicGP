@@ -36,6 +36,7 @@ extern "C"{
 #include "covar_sep.h"
 #include "lbfgsb.h"
 }
+using std::free;
 
 #define SDEPS sqrt(DOUBLE_EPS)
 

@@ -6,6 +6,8 @@
 extern"C"{
 #include "matrix.h"
 }
+using std::free;
+
 unsigned int NGPsep = 0;
 GPsep **gpseps = NULL;
 

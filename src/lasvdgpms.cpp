@@ -16,6 +16,11 @@ extern "C"{
 #include "maximinLHS.h"
 }
 
+#undef NAN
+#define NAN R_NaN
+
+using std::free;
+
 static const double dab1 = 1.5;
 static const double sqreps = 1.490116119384766E-8;
 static double gab[2] = {0.0, 0.0};

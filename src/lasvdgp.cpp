@@ -17,6 +17,11 @@ extern "C"{
 #include "linalg.h"
 }
 
+#undef NAN
+#define NAN R_NaN
+
+using std::free;
+
 static const double dab1 = 1.5;
 static const double numdab2 = 3.907364;
 static const double quanp = 0.1;

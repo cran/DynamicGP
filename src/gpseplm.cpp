@@ -12,7 +12,7 @@ extern "C"{
 #include "linalg.h"
 #include "lbfgsb.h"
 }
-
+using std::free;
 #define SDEPS sqrt(DOUBLE_EPS)
 
 GPsepLm* newGPsepLm(const unsigned int m, const unsigned int n, double **X,
