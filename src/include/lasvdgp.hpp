@@ -4,7 +4,7 @@
 
 enum ERROR_TYPE{Chol = 1, SVD = 2, Opt= 3};
 
-typedef struct
+struct lasvdGP
 {
 
   unsigned int nbas;		/* number of svd basis determined by frac*/
@@ -31,7 +31,7 @@ typedef struct
   double **design;		/* total design matrix, no memory copy */
   double **resp; 		/* total response matrix, no memory copy  */
   double **coeff;		/* nsv \times nbas matrix of right singular vectors  */
-} lasvdGP;
+};
 void getDs(double **X, unsigned int n, unsigned int m,
 	   double *dstart, double *dmin, double *dmax, double *dab2);
 lasvdGP* newlasvdGP(double* xpred, double **design, double **resp,

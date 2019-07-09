@@ -45,7 +45,7 @@ newGPsep <- function(X, Z, d, g, dK=FALSE)
               g = as.double(g),
               dK = as.integer(dK),
               gpsepi = integer(1),
-              package = "DynamicGP")
+              PACKAGE = "DynamicGP")
 
     ## return C-side GP index
     return(out$gpsepi)
@@ -59,7 +59,7 @@ newGPsep <- function(X, Z, d, g, dK=FALSE)
 deleteGPsep <- function(gpsepi)
 {
     .C("deleteGPsep_R",
-       gpsepi = as.integer(gpsepi), package="DynamicGP")
+       gpsepi = as.integer(gpsepi), PACKAGE="DynamicGP")
     invisible(NULL)
 }
 
@@ -70,7 +70,7 @@ deleteGPsep <- function(gpsepi)
 
 deleteGPseps <- function()
 {
-    .C("deleteGPseps_R", package="DynamicGP")
+    .C("deleteGPseps_R", PACKAGE="DynamicGP")
     invisible(NULL)
 }
 
@@ -86,7 +86,7 @@ llikGPsep <- function(gpsepi, dab=c(0,0), gab=c(0,0))
             dab = as.double(dab),
             gab = as.double(gab),
             llik = double(1),
-            package = "DynamicGP")
+            PACKAGE = "DynamicGP")
 
     return(r$llik)
 }
@@ -100,7 +100,7 @@ llikGPsep <- function(gpsepi, dab=c(0,0), gab=c(0,0))
 
 getmGPsep <- function(gpsepi)
 {
-    .C("getmGPsep_R", gpsepi = as.integer(gpsepi), m = integer(1), package="DynamicGP")$m
+    .C("getmGPsep_R", gpsepi = as.integer(gpsepi), m = integer(1), PACKAGE="DynamicGP")$m
 }
 
 
@@ -113,7 +113,7 @@ getmGPsep <- function(gpsepi)
 getdGPsep <- function(gpsepi)
 {
     m <- getmGPsep(gpsepi)
-    .C("getdGPsep_R", gpsepi = as.integer(gpsepi), d = double(m), package="DynamicGP")$d
+    .C("getdGPsep_R", gpsepi = as.integer(gpsepi), d = double(m), PACKAGE="DynamicGP")$d
 }
 
 
@@ -125,7 +125,7 @@ getdGPsep <- function(gpsepi)
 
 getgGPsep <- function(gpsepi)
 {
-    .C("getgGPsep_R", gpsepi = as.integer(gpsepi), g = double(1), package="DynamicGP")$g
+    .C("getgGPsep_R", gpsepi = as.integer(gpsepi), g = double(1), PACKAGE="DynamicGP")$g
 }
 
 
@@ -144,7 +144,7 @@ newparamsGPsep <- function(gpsepi, d, g=-1)
             gpi = as.integer(gpsepi),
             d = as.double(d),
             g = as.double(g),
-            package = "DynamicGP")
+            PACKAGE = "DynamicGP")
 
     invisible(NULL)
 }
@@ -184,7 +184,8 @@ jmleGPsep <- function(gpsepi, drange=c(sqrt(.Machine$double.eps), 10),
             g = double(1),
             dits = integer(1),
             gits = integer(1),
-            dconv = integer(1))
+            dconv = integer(1),
+            PACKAGE = "DynamicGP")
 
     return(data.frame(d=t(r$d), g=r$g, tot.its=r$dits+r$gits,
                       dits=r$dits, gits=r$gits, dconv=r$dconv))
@@ -209,6 +210,6 @@ predGPsep <- function(gpsepi, XX)
               s2 = double(nn),
               df = double(1),
               llik = double(1),
-              package="DynamicGP")
+              PACKAGE="DynamicGP")
         return(list(mean=out$mean, s2=out$s2, df=out$df, llik=out$llik))
 }

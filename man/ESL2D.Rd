@@ -13,7 +13,7 @@
   problem. The details are provided in Chapter 4 of Zhang (2018).
 }
 \usage{
-ESL2D(design,resp,yobs,candidate,frac=.95,
+ESL2D(design,resp,yobs,candidate,frac=.95,nstarts=5,
       mtype=c("zmean","cmean","lmean"),
       gstart=0.0001)
 }
@@ -37,6 +37,13 @@ ESL2D(design,resp,yobs,candidate,frac=.95,
   \item{frac}{
     The threshold in the cumulative percentage criterion to select the
     number of SVD bases. The default value is 0.95.
+  }
+
+  \item{nstarts}{
+    The number of starting points used in the numerical maximization of
+    the posterior density function. The larger \code{nstarts} will
+    typically lead to more accurate prediction but longer computational
+    time. The default value is 5.
   }
 
   \item{mtype}{ The type of mean functions for the GP models. The choice
@@ -85,7 +92,7 @@ ESL2D(design,resp,yobs,candidate,frac=.95,
   x0 <- runif(3)
   y0 <- forretal(x0,timepoints)
   yobs <- y0+rnorm(200,0,sd(y0)/sqrt(50))
-  xhat <- ESL2D(design,resp,yobs,candidate)
+  xhat <- ESL2D(design,resp,yobs,candidate,nstarts=1)
   yhat <- forretal(xhat,timepoints)
 
   ## draw a figure to illustrate

@@ -1,18 +1,18 @@
-/******************************************************************************** 
+/********************************************************************************
  *
  * Bayesian Regression and Adaptive Sampling with Gaussian Process Trees
  * Copyright (C) 2005, University of California
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,7 +23,7 @@
 
 
 #ifndef __LINALG_H__
-#define __LINALG_H__ 
+#define __LINALG_H__
 
 #include "matrix.h"
 
@@ -42,8 +42,6 @@
 #ifdef FORTPACK
 #define dpotrf dpotrf_
 extern void dpotrf(char*, size_t*, double*, size_t*, long*);
-#define dtrsv dtrsv_
-extern void dtrsv(char*, char*, char*, int*, double*, int*, double*, int*); 
 #define dposv dposv_
 /* extern void dposv(char *, int *, int *, double*, int *, double*, int *, int *); */
 extern void dposv(char *, size_t *, size_t *, double*, size_t*, double*, size_t*, long*);
@@ -65,25 +63,25 @@ extern void dgemm(char*, char*,  size_t*, size_t*, size_t*, double*,
 extern void dsymm(char*, char*, size_t*, size_t*, double*,
 		  double*, size_t*, double*, size_t*, double*, double*, size_t*);
 #define dgemv dgemv_
-/* extern void dgemv(char*, int*, int*, double*, double*, int*, 
+/* extern void dgemv(char*, int*, int*, double*, double*, int*,
    double*, int*, double*, double*, int*); */
-extern void dgemv(char*, size_t*, size_t*, double*, double*, size_t*, 
+extern long dgemv(char*, size_t*, size_t*, double*, double*, size_t*,
                   double*, size_t*, double*, double*, size_t*);
 #define dsymv dsymv_
-/*extern void dsymv(char*, int*, double*, double*, int*, 
+/*extern void dsymv(char*, int*, double*, double*, int*,
   double*, int*, double*, double*, int*); */
-extern void dsymv(char*, size_t*, double*, double*, size_t*, 
+extern void dsymv(char*, size_t*, double*, double*, size_t*,
                   double*, size_t*, double*, double*, size_t*);
 #define ddot ddot_
 extern double ddot(size_t*, double*, size_t*, double*, size_t*);
 #define daxpy daxpy_
 /* extern void daxpy(int*, double*, double*, int*, double*, int*); */
-extern void daxpy(size_t*, double*, double*, size_t*, double*, size_t*);
+extern long daxpy(size_t*, double*, double*, size_t*, double*, size_t*);
 #define dtrsv dtrsv_
-extern void dtrsv(char*, char*, char*, int*, double*, int*, double*, int*);
+extern long dtrsv(char*, char*, char*, int*, double*, int*, double*, int*);
 
 #define dtrmv dtrmv_
-extern void dtrmv(char* uplo, char* trans, char* diag,
+extern long dtrmv(char* uplo, char* trans, char* diag,
 		  int *n, double* a, int *lda, double *x,
 		  int *incx);
 #define dtrsm dtrsm_
@@ -101,20 +99,20 @@ extern void dgesdd (const char *jobz,const int *m, const int *n,
 #endif
 
 
-void linalg_dtrsv(const enum CBLAS_TRANSPOSE TA, int n, double **A, int lda, 
+void linalg_dtrsv(const enum CBLAS_TRANSPOSE TA, int n, double **A, int lda,
 		  double *Y, int ldy);
 void linalg_daxpy(int n, double alpha, double *X, int ldx, double *Y, int ldy);
 double linalg_ddot(int n, double *X, int ldx, double *Y, int ldy);
-void linalg_dgemm(const enum CBLAS_TRANSPOSE TA, const enum CBLAS_TRANSPOSE TB, 
-		int m, int n, int k, double alpha, double **A, int lda, double **B, 
+void linalg_dgemm(const enum CBLAS_TRANSPOSE TA, const enum CBLAS_TRANSPOSE TB,
+		int m, int n, int k, double alpha, double **A, int lda, double **B,
 		int ldb, double beta, double **C, int ldc);
 void linalg_dsymm(const enum CBLAS_SIDE side,
-		int m, int n, double alpha, double **A, int lda, double **B, 
+		int m, int n, double alpha, double **A, int lda, double **B,
 		int ldb, double beta, double **C, int ldc);
-void linalg_dgemv(const enum CBLAS_TRANSPOSE TA, 
-		int m, int n, double alpha, double **A, int lda, 
+void linalg_dgemv(const enum CBLAS_TRANSPOSE TA,
+		int m, int n, double alpha, double **A, int lda,
 		double *X, int ldx, double beta, double *Y, int ldy);
-void linalg_dsymv(int n, double alpha, double **A, int lda, 
+void linalg_dsymv(int n, double alpha, double **A, int lda,
 		double *X, int ldx, double beta, double *Y, int ldy);
 
 int linalg_dposv(int n, double **Mutil, double **Mi);

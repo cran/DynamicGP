@@ -1,4 +1,4 @@
-ESL2D <- function(design,resp,yobs,candidate,frac=.95,
+ESL2D <- function(design,resp,yobs,candidate,frac=.95,nstarts=5,
                   mtype=c("zmean","cmean","lmean"),
                   gstart=0.0001)
 {
@@ -19,7 +19,7 @@ ESL2D <- function(design,resp,yobs,candidate,frac=.95,
     for(i in 1:numbas)
     {
         ccoeff <- coeff[,i]
-        gpobj <- if(mtype=="zmean") gpsepms(ccoeff,design,NULL,gstart) else gpseplmms(ccoeff,design,mtype,NULL,gstart)
+        gpobj <- if(mtype=="zmean") gpsepms(ccoeff,design,NULL,gstart,nstarts) else gpseplmms(ccoeff,design,mtype,NULL,gstart,nstarts)
         pred <- predict(gpobj,candidate)
         delete(gpobj)
         criter <- criter+reddsq[i]*(pred$s2+(pred$mean-cht[i])^2)
@@ -27,7 +27,7 @@ ESL2D <- function(design,resp,yobs,candidate,frac=.95,
     xhat <- candidate[which.min(criter),]
     return(xhat)
 }
-SL2D <- function(design,resp,yobs,candidate,frac=.95,
+SL2D <- function(design,resp,yobs,candidate,frac=.95,nstarts=5,
                  mtype=c("zmean","cmean","lmean"),
                  gstart=0.0001)
 {
@@ -48,7 +48,7 @@ SL2D <- function(design,resp,yobs,candidate,frac=.95,
     for(i in 1:numbas)
     {
         ccoeff <- coeff[,i]
-        gpobj <- if(mtype=="zmean") gpsepms(ccoeff,design,NULL,gstart) else gpseplmms(ccoeff,design,mtype,NULL,gstart)
+        gpobj <- if(mtype=="zmean") gpsepms(ccoeff,design,NULL,gstart,nstarts) else gpseplmms(ccoeff,design,mtype,NULL,gstart,nstarts)
         pred <- predict(gpobj,candidate)
         delete(gpobj)
         criter <- criter+reddsq[i]*(pred$mean-cht[i])^2

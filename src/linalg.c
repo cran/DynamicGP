@@ -1,18 +1,18 @@
-/******************************************************************************** 
+/********************************************************************************
  *
  * Bayesian Regression and Adaptive Sampling with Gaussian Process Trees
  * Copyright (C) 2005, University of California
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -214,7 +214,7 @@ double *X, *Y;
 /*
  * linalg_dposv:
  *
- * analog of dposv in clapack and lapack where 
+ * analog of dposv in clapack and lapack where
  * Mutil is with colmajor and uppertri or rowmajor
  * and lowertri
  */
@@ -224,7 +224,7 @@ int n;
 double **Mutil, **Mi;
 {
   long info;
-	
+
   /* then use LAPACK */
 #ifdef FORTPACK
   size_t n64;
@@ -234,14 +234,14 @@ double **Mutil, **Mi;
   /*info = clapack_dposv(CblasColMajor,CblasUpper,n,n,*Mutil,n,*Mi,n);*/
   info = clapack_dposv(CblasRowMajor,CblasLower,n,n,*Mutil,n,*Mi,n);
 #endif
-  
+
 /* #ifdef DEBUG */
 /*   if(info != 0) { */
 /*     matrix_to_file("M.dump", Mutil, n, n); */
 /*     error("offending matrix dumped into matrix.dump"); */
 /*   } */
 /* #endif */
-  
+
   return (int) info;
 }
 
@@ -252,7 +252,7 @@ double **Mutil, **Mi;
  * analog of dgesv in clapack and lapack;
  * row or col major doesn't matter because it is
  * assumed that Mutil is symmetric
- * 
+ *
  * inverse_lu used this with RowMajor, other with ColMajor
  */
 
@@ -281,7 +281,7 @@ double **Mutil, **Mi;
 
 /*
  *
- * analog of dpotrf in clapack and lapack where 
+ * analog of dpotrf in clapack and lapack where
  * var is with colmajor and uppertri or rowmajor
  * and lowertri
  */
@@ -295,7 +295,7 @@ double **var;
 #ifdef FORTPACK
   size_t n64;
   n64 = n;
-  dpotrf(&uplo,&n64,*var,&n64,&info); 
+  dpotrf(&uplo,&n64,*var,&n64,&info);
 #else
   info = clapack_dpotrf(CblasRowMajor,CblasLower,n,*var,n);
   /*info = clapack_dpotrf(CblasColMajor,CblasUpper,n,*var,n);*/
@@ -303,7 +303,7 @@ double **var;
 #ifdef DEBUG
   assert(info == 0);
 #endif
-  
+
   return (int) info;
 }
 
@@ -312,9 +312,9 @@ double **var;
 #ifndef FORTPACK
 /*
  * solve_cg_symm:
- * 
- * solve Ax=b by inverting A and computing using the conjugate 
- * gradient method from Skilling (also takes advantage of symmetry in C) 
+ *
+ * solve Ax=b by inverting A and computing using the conjugate
+ * gradient method from Skilling (also takes advantage of symmetry in C)
  * C[n][n] double u[n], y[n], y_star[n]
  */
 
@@ -324,7 +324,7 @@ double **C;
 double *u, *y, *y_star;
 double theta;
 {
-	double g[n], g_star[n], h[n], h_star[n], Ch[n], Ch_star[n]; 
+	double g[n], g_star[n], h[n], h_star[n], Ch[n], Ch_star[n];
 	double Cy[n], Cy_star[n], Ag_star[n], ACh_star[n], Ay_star[n], CAy_star[n];
 	double **A;
 	double gamma, gamma_star, lambda, lambda_star, g_old_norm, g_old_norm_star, Q, Q_star, u_norm, upper;
@@ -412,7 +412,7 @@ int linalg_dgesdd(double **X, int nrow, int ncol,
   dgesdd(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
 	 *vt,&nsv,&tmp,&lwork,iwork, &info);
   if(info != 0) return info;
-  
+
   lwork = (int) tmp;
 
   work = (double*) malloc(lwork * sizeof(double));
@@ -452,7 +452,7 @@ int linalgext_dposv(n, m, Mutil, Mi)
   double **Mutil, **Mi;
 {
   long info;
-	
+
   /* then use LAPACK */
 #ifdef FORTPACK
   size_t n64;
@@ -464,6 +464,6 @@ int linalgext_dposv(n, m, Mutil, Mi)
   /*info = clapack_dposv(CblasColMajor,CblasUpper,n,n,*Mutil,n,*Mi,n);*/
   info = clapack_dposv(CblasRowMajor,CblasLower,n,m,*Mutil,n,*Mi,n);
 #endif
-  
+
   return (int) info;
 }

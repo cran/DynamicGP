@@ -2,7 +2,7 @@
 #define __GPSEP_LM_H__
 #include "gp_sep.hpp"
 
-typedef struct
+struct GPsepLm
 {
   GPsep* gpsep;
   unsigned int p;		/* number of regression covariates */
@@ -13,7 +13,7 @@ typedef struct
   double **HtKiH;		/* p \times p matrix H^TK^{-1}H */
   double **Kernel;		/* n \times n matrix K^{-1}H(H^TK^{-1}H)^{-1}H^TK^{-1} */
   double psi, ldetHtKiH;
-} GPsepLm;
+};
 
 GPsepLm* newGPsepLm(const unsigned int, const unsigned int, double**,
 		    double*, double*, const double, const int,

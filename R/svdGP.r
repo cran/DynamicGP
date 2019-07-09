@@ -76,10 +76,8 @@ svdgpsepms <- function(X0,design,resp,frac=.95,nstarts=5,
     resid <- resp-basis%*%t(coeff)
     varres <- drop(crossprod(as.vector(resid)))
     varres <- varres/(lenresp+2)
-    cl <- parallel::makeCluster(nthread,type=clutype)
-    ret <- tryCatch(parallel::parApply(cl,coeff,2,fitgps,
-                                       design,X0,nstarts,d,gstart,mtype),
-                    finally=parallel::stopCluster(cl))
+    ret <- genericApply(coeff,2,fitgps,design,X0,nstarts,d,gstart,mtype,
+                        nthread=nthread,clutype=clutype)
     vmean <- matrix(unlist(sapply(ret,`[`,"mean")),nrow=numbas,byrow=TRUE)
     vsigma2 <- matrix(unlist(sapply(ret,`[`,"s2")),nrow=numbas,byrow=TRUE)
     pmean <- basis%*%vmean

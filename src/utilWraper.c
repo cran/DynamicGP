@@ -3,11 +3,11 @@
 #include "covar_sep.h"
 #include "util.h"
 
-void distance_R(double *X1_in, int *n1_in, double *X2_in, 
+void distance_R(double *X1_in, int *n1_in, double *X2_in,
 		int *n2_in, int *m_in, double *D_out)
 {
   double **X1, **X2, **D;
-  
+
   /* make matrix bones */
   X1 = new_matrix_bones(X1_in, *n1_in, *m_in);
   X2 = new_matrix_bones(X2_in, *n2_in, *m_in);
@@ -33,7 +33,7 @@ void distance_symm_R(double *X_in, int *n_in, int *m_in, double *D_out)
 {
   int n, m, i, j, k;
   double **X, **D;
-  
+
   /* copy integers */
   n = *n_in;
   m = *m_in;
@@ -47,9 +47,9 @@ void distance_symm_R(double *X_in, int *n_in, int *m_in, double *D_out)
     D[i][i] = 0.0;
     for(j=i+1; j<n; j++) {
       D[i][j] = 0.0;
-      for(k=0; k<m; k++) 
+      for(k=0; k<m; k++)
 	D[i][j] += sq(X[i][k] - X[j][k]);
-        D[j][i] = D[i][j];
+      D[j][i] = D[i][j];
     }
   }
 

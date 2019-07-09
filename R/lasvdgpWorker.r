@@ -25,7 +25,8 @@ lasvdgp <- function(X0, design, resp, n0, nn,
               as.integer(nadd), as.double(frac), as.double(gstart),
               as.integer(resvdThres), as.integer(every),
               as.integer(maxit), as.integer(verb), as.character(errlog),
-              pmean=double(M*tlen), ps2=double(M*tlen), flags = integer(M)) #package = lasvdgp
+              pmean=double(M*tlen), ps2=double(M*tlen), flags = integer(M),
+              PACKAGE="DynamicGP")
     pmean <- out$pmean
     ps2 <- out$ps2
     ret <- list(pmean=matrix(pmean,nrow=tlen),ps2=matrix(ps2,nrow=tlen), flags=out$flags)
@@ -53,12 +54,10 @@ lasvdgpParal <- function(X0, design, resp, n0, nn,
     if(every < 0) stop("illegal every")
     blocks <- blockPar(M,nthread)
     X0par <- lapply(blocks,getRowBlock,X0)
-    cl <- parallel::makeCluster(nthread,type=clutype)
-    ret <- tryCatch(parallel::parLapply(cl,X0par,lasvdgp,design,
-                                        resp,n0,nn,nfea,nsvd,nadd,frac,
-                                        gstart,resvdThres,every,nstarts,maxit,verb,
-                                        errlog, nthread, clutype),
-                    finally=parallel::stopCluster(cl))
+    ret <- genericLapply(X0par,lasvdgp,design,resp,n0,nn,nfea,nsvd,nadd,frac,
+                         gstart,resvdThres,every,nstarts,maxit,verb,
+                         errlog, nthread, clutype,
+                         nthread=nthread, clutype=clutype)
     pmean <- matrix(unlist(sapply(ret,`[`,"pmean")),nrow=tlen)
     ps2 <- matrix(unlist(sapply(ret,`[`,"ps2")),nrow=tlen)
     flags <- unlist(sapply(ret,`[`,"flags"))
@@ -91,7 +90,7 @@ lasvdgpOMP <- function(X0, design, resp, n0, nn,
               as.integer(nsvd), as.integer(nadd), as.double(frac), as.double(gstart),
               as.integer(resvdThres), as.integer(every), as.integer(maxit),
               as.integer(verb), as.character(errlog), as.integer(nthread),pmean=double(M*tlen),
-              ps2=double(M*tlen), flags = integer(M))
+              ps2=double(M*tlen), flags = integer(M), PACKAGE="DynamicGP")
     ret <- list(pmean = matrix(out$pmean,nrow=tlen), ps2 = matrix(out$ps2, nrow=tlen),
                 flags = out$flags)
     return(ret)
@@ -124,7 +123,8 @@ lasvdgpms <- function(X0, design, resp, n0, nn,
               as.integer(nadd), as.double(frac), as.double(gstart),
               as.integer(resvdThres), as.integer(every), as.integer(nstarts),
               as.integer(maxit), as.integer(verb), as.character(errlog),
-              pmean=double(M*tlen), ps2=double(M*tlen), flags=integer(M)) #package = lasvdgp
+              pmean=double(M*tlen), ps2=double(M*tlen), flags=integer(M),
+              PACKAGE="DynamicGP")
     pmean <- out$pmean
     ps2 <- out$ps2
     ret <- list(pmean=matrix(pmean,nrow=tlen),ps2=matrix(ps2,nrow=tlen), flags = out$flags)
@@ -158,7 +158,7 @@ lasvdgpmsOMP <- function(X0, design, resp, n0, nn,
               as.integer(nadd), as.double(frac), as.double(gstart),
               as.integer(resvdThres), as.integer(every), as.integer(nstarts),
               as.integer(maxit), as.integer(verb), as.character(errlog),as.integer(nthread),
-              pmean=double(M*tlen), ps2=double(M*tlen), flags=integer(M)) #package = lasvdgp
+              pmean=double(M*tlen), ps2=double(M*tlen), flags=integer(M), PACKAGE="DynamicGP")
     pmean <- out$pmean
     ps2 <- out$ps2
     ret <- list(pmean=matrix(pmean,nrow=tlen),ps2=matrix(ps2,nrow=tlen), flags = out$flags)
@@ -188,12 +188,9 @@ lasvdgpmsParal <- function(X0, design, resp, n0, nn,
     if(nstarts < 0) stop("illegal nstarts")
     blocks <- blockPar(M,nthread)
     X0par <- lapply(blocks,getRowBlock,X0)
-    cl <- parallel::makeCluster(nthread,type=clutype)
-    ret <- tryCatch(parallel::parLapply(cl,X0par,lasvdgpms,design,
-                                        resp,n0,nn,nfea,nsvd,nadd,frac,
-                                        gstart,resvdThres,every,nstarts,
-                                        maxit,verb,errlog,nthread,clutype),
-                    finally=parallel::stopCluster(cl))
+    ret <- genericLapply(X0par,lasvdgpms,design,resp,n0,nn,nfea,nsvd,nadd,frac,
+                         gstart,resvdThres,every,nstarts,maxit,verb,errlog,nthread,
+                         clutype, nthread=nthread, clutype=clutype)
     pmean <- matrix(unlist(sapply(ret,`[`,"pmean")),nrow=tlen)
     ps2 <- matrix(unlist(sapply(ret,`[`,"ps2")),nrow=tlen)
     flags <- unlist(sapply(ret,`[`,"flags"))

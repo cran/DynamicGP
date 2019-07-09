@@ -26,7 +26,7 @@
 #ifndef __GP_SEP_H__
 #define __GP_SEP_H__
 
-typedef struct gpsep {
+struct GPsep{
   double **X;       /* design matrix */
   double **K;       /* covariance between design points */
   double **Ki;      /* inverse of K */
@@ -39,7 +39,7 @@ typedef struct gpsep {
   double *d;        /* separable lengthscale parameter to correlation */
   double g;         /* nugget parameter to correlation */
   double phi;       /* t(Z) %*% Ki %*% Z = t(Z) %*% KiZ, used for s2 */
-} GPsep;
+};
 
 
 GPsep* newGPsep(const unsigned int m, const unsigned int n, double **X,
@@ -84,10 +84,10 @@ void predGPsep_lite(GPsep* gpsep, unsigned int nn, double **XX, double *mean,
      double *sigma2, double *df, double *llik);
 void alcGPsep(GPsep *gpsep, unsigned int ncand, double **Xcand,
         unsigned int nref, double **Xref,  int verb, double *alc);
-void pred_generic(const unsigned int n, const double phidf, double *Z, 
-		  double **Ki, const unsigned int nn, double **k, double *mean, 
+void pred_generic(const unsigned int n, const double phidf, double *Z,
+		  double **Ki, const unsigned int nn, double **k, double *mean,
 		  double **Sigma);
-void new_predutil_generic_lite(const unsigned int n, double **Ki, 
+void new_predutil_generic_lite(const unsigned int n, double **Ki,
 			       const unsigned int nn, double **k, double ***ktKi,
 			       double **ktKik);
 #endif

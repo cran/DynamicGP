@@ -15,9 +15,15 @@
   either by the \code{ESL2D} approach or by the \code{SL2D}
   approach. Details are provided in Chapter 4 of Zhang (2018).  }
 
-\usage{ saEI(xi,yi,yobs,nadd,candei,candest,func,...,
-  mtype=c("zmean","cmean","lmean"), estsol=c("ESL2D","SL2D"),
-  frac=.95,gstart=0.0001, nthread=1,clutype="PSOCK") } \arguments{
+\usage{
+saEI(xi,yi,yobs,nadd,candei,candest,func,...,
+     mtype=c("zmean","cmean","lmean"),
+     estsol=c("ESL2D","SL2D"),
+     frac=.95, nstarts=5, gstart=0.0001,
+     nthread=1, clutype="PSOCK")
+}
+
+\arguments{
   \item{xi}{ An \code{N0} by \eqn{d} matrix of \code{N0} initial design
   points.  }
 
@@ -56,6 +62,13 @@
 
   \item{frac}{ The threshold in the cumulative percentage criterion to select the
     number of SVD bases. The default value is 0.95.
+  }
+
+  \item{nstarts}{
+    The number of starting points used in the numerical maximization of
+    the posterior density function. The larger \code{nstarts} will
+    typically lead to more accurate prediction but longer computational
+    time. The default value is 5.
   }
 
   \item{gstart}{ The starting number and upper bound for estimating the
@@ -125,7 +138,7 @@ PhD thesis, Queen's University, ON, Canada.}
   y0 <- forretal(x0,timepoints)
   yobs <- y0+rnorm(200,0,sd(y0)/sqrt(50))
   ret <- saEI(xi,yi,yobs,1,candei,candest,forretal,timepoints,
-                nthread=1)
+              nstarts=1, nthread=1)
   yhat <- forretal(ret$xhat,timepoints)
 
   ## draw a figure to illustrate

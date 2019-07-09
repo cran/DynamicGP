@@ -110,16 +110,16 @@ int ** new_imatrix(unsigned int n1, unsigned int n2)
 {
   int i;
   int **m;
-  
+
   if(n1 == 0 || n2 == 0) return NULL;
-  
+
   m = (int**) malloc(sizeof(double*) * n1);
   assert(m);
   m[0] = (int*) malloc(sizeof(double) * (n1*n2));
   assert(m[0]);
-  
+
   for(i=1; i<n1; i++) m[i] = m[i-1] + n2;
-  
+
   return m;
 }
 
@@ -396,14 +396,14 @@ double quick_select_index(double arr[], int iarr[], int n, int k)
     ll = low + 1;
     hh = high;
     for (;;) {
-        do ll++; while (arr[low] > arr[ll]) ;
-        do hh--; while (arr[hh]  > arr[low]) ;
+      do ll++; while (arr[low] > arr[ll]) ;
+      do hh--; while (arr[hh]  > arr[low]) ;
 
-        if (hh < ll)
+      if (hh < ll)
         break;
 
-        ELEM_SWAP(arr[ll], arr[hh]) ;
-        if(iarr) IELEM_SWAP(iarr[ll], iarr[hh]) ;
+      ELEM_SWAP(arr[ll], arr[hh]) ;
+      if(iarr) IELEM_SWAP(iarr[ll], iarr[hh]) ;
     }
 
     /* Swap middle item (in position low) back into correct position */
@@ -412,10 +412,10 @@ double quick_select_index(double arr[], int iarr[], int n, int k)
 
     /* Re-set active partition */
     if (hh <= k)
-        low = ll;
-        if (hh >= k)
-        high = hh - 1;
-    }
+      low = ll;
+    if (hh >= k)
+      high = hh - 1;
+  }
 }
 
 #undef ELEM_SWAP

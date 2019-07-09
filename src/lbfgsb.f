@@ -498,12 +498,12 @@ c
 c
 c     ************
 
-      logical          prjctd,cnstnd,boxed,updatd,wrk
-      character*3      word
-      integer          i,k,nintol,itfile,iback,nskip,
-     +                 head,col,iter,itail,iupdat,
-     +                 nseg,nfgv,info,ifun,
-     +                 iword,nfree,nact,ileave,nenter
+      logical             prjctd,cnstnd,boxed,updatd,wrk
+      character(len=3) :: word
+      integer             i,k,nintol,itfile,iback,nskip,
+     +                    head,col,iter,itail,iupdat,
+     +                    nseg,nfgv,info,ifun,
+     +                    iword,nfree,nact,ileave,nenter
 cj itmp for use in R output
       integer          itmp
       double precision theta,fold,ddot,dr,rr,tol,
@@ -579,14 +579,11 @@ c        Check the input arguments for errors.
          call errclb(n,m,factr,l,u,nbd,itask,info,k)
 c  ERROR return
          if ((itask .ge. 9) .and. (itask .le. 19)) then
-            call prn3lb(n,x,f,itask,iprint,info,itfile,
-     +                  iter,nfgv,nintol,nskip,nact,sbgnrm,
-     +                  zero,nseg,word,iback,stp,xstep,k,
-     +                  cachyt,sbtime,lnscht)
+            call prn3lb(n,x,f,itask,iprint,info,k)
             return
          endif
 
-         call prn1lb(n,m,l,u,x,iprint,itfile,epsmch)
+         call prn1lb(n,m,l,u,x,iprint,epsmch)
 
 c        Initialize iwhere & project x onto the feasible set.
 
@@ -918,8 +915,8 @@ c        Compute the infinity norm of the projected (-)gradient.
 
 c        Print iteration information.
 
-         call prn2lb(n,x,f,g,iprint,itfile,iter,nfgv,nact,
-     +               sbgnrm,nseg,word,iword,iback,stp,xstep)
+         call prn2lb(n,f,iprint,iter,
+     +               sbgnrm,word,iword,iback,xstep)
          goto 1000
       endif
  777  continue
@@ -1029,10 +1026,7 @@ c -------------------- the end of the loop -----------------------------
 cj    call timer(time2)
       time2 = 0.0d0
       time = time2 - time1
-      call prn3lb(n,x,f,itask,iprint,info,itfile,
-     +            iter,nfgv,nintol,nskip,nact,sbgnrm,
-     +            time,nseg,word,iback,stp,xstep,k,
-     +            cachyt,sbtime,lnscht)
+      call prn3lb(n,x,f,itask,iprint,info,k)
  1000 continue
 
 c     Save local variables.
@@ -1079,10 +1073,10 @@ c     Save local variables.
       dsave(16) = dtd
 
 cw 1001 format (//,'ITERATION ',i5)
- 1002 format
-     +  (/,'At iterate',i5,4x,'f= ',1p,d12.5,4x,'|proj g|= ',1p,d12.5)
- 1003 format (2(1x,i4),5x,'-',5x,'-',3x,'-',5x,'-',5x,'-',8x,'-',3x,
-     +        1p,2(1x,d10.3))
+cw 1002 format
+cw     +  (/,'At iterate',i5,4x,'f= ',1p,d12.5,4x,'|proj g|= ',1p,d12.5)
+cw 1003 format (2(1x,i4),5x,'-',5x,'-',3x,'-',5x,'-',5x,'-',8x,'-',3x,
+cw     +        1p,2(1x,d10.3))
 cw 1004 format ('  ys=',1p,e10.3,'  -gs=',1p,e10.3,' BFGS update SKIPPED')
 cw 1005 format (/,
 cw     +' Singular triangular system detected;',/,
@@ -1846,7 +1840,7 @@ cw       write (6,2010)
          call intpr('--- exit CAUCHY---',-1, 0,0)
       endif
 cw 1010 format ('Cauchy X =  ',/,(4x,1p,6(1x,d11.4)))
- 2010 format (/,'---------------- exit CAUCHY----------------------',/)
+cw 2010 format (/,'---------------- exit CAUCHY----------------------',/)
 cw 3010 format (/,'---------------- CAUCHY entered-------------------')
 cw 4010 format ('Piece    ',i3,' --f1, f2 at start point ',1p,2(1x,d11.4))
 cw 4011 format (/,'Piece    ',i3,' --f1, f2 at start point ',
@@ -2851,9 +2845,9 @@ c                                             and the last column of SS:
 
 c======================= The end of matupd =============================
 
-      subroutine prn1lb(n, m, l, u, x, iprint, itfile, epsmch)
+      subroutine prn1lb(n, m, l, u, x, iprint, epsmch)
 
-      integer n, m, iprint, itfile
+      integer n, m, iprint
       double precision epsmch, x(n), l(n), u(n)
 
 c     ************
@@ -2877,7 +2871,7 @@ c
 c
 c     ************
 
-      integer i
+
       integer nprt
 
 c  limit output to 1st 5 elements
@@ -2933,13 +2927,13 @@ cw     +        2x,'stepl',4x,'tstep',5x,'projg',8x,'f')
 
 c======================= The end of prn1lb =============================
 
-      subroutine prn2lb(n, x, f, g, iprint, itfile, iter, nfgv, nact,
-     +                  sbgnrm, nseg, word, iword, iback, stp, xstep)
+      subroutine prn2lb(n, f, iprint, iter,
+     +                  sbgnrm, word, iword, iback, xstep)
 
-      character*3      word
-      integer          n, iprint, itfile, iter, nfgv, nact, nseg,
-     +                 iword, iback
-      double precision f, sbgnrm, stp, xstep, x(n), g(n)
+      character(len=3) :: word
+      integer             n, iprint, iter,
+     +                    iword, iback
+      double precision    f, sbgnrm, xstep
 
 c     ************
 c
@@ -2961,7 +2955,7 @@ c
 c
 c     ************
 
-      integer i,imod
+      integer imod
 
 c           'word' records the status of subspace solutions.
       if (iword .eq. 0) then
@@ -3006,17 +3000,13 @@ cw 3001 format(2(1x,i4),2(1x,i5),2x,a3,1x,i4,1p,2(2x,d7.1),1p,2(1x,d10.3))
 
 c======================= The end of prn2lb =============================
 
-      subroutine prn3lb(n, x, f, itask, iprint, info, itfile,
-     +                  iter, nfgv, nintol, nskip, nact, sbgnrm,
-     +                  time, nseg, word, iback, stp, xstep, k,
-     +                  cachyt, sbtime, lnscht)
+      subroutine prn3lb(n, x, f, itask, iprint, info, k)
 
 c      character*255     task
-      character*3      word
-      integer          n, iprint, info, itfile, iter, nfgv, nintol,
-     +                 nskip, nact, nseg, iback, k, itask
-      double precision f, sbgnrm, time, stp, xstep, cachyt, sbtime,
-     +                 lnscht, x(n)
+
+      integer             n, iprint, info,
+     +                    k, itask
+      double precision    f, x(n)
 
 c     ************
 c
@@ -3039,7 +3029,7 @@ c
 c
 c     ************
 
-      integer i
+
       integer nprt
 
 c      if (task(1:5) .eq. 'ERROR') goto 999

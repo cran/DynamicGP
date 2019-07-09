@@ -92,7 +92,7 @@ test <- lhs::randomLHS(50,3)
 resp <- apply(design,1,forretal,timepoints)
 
 ## fit full SVD-based GP model
-ret <- svdGP(design,resp,test,frac=.95,
+ret <- svdGP(design,resp,test,frac=.95,nstarts=1,
              centralize=TRUE,nthread=2)
 }
 \keyword{GP model}

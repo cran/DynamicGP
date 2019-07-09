@@ -133,7 +133,7 @@ test <- lhs::randomLHS(20,3)
 ## evaluate the response matrix on the design matrix
 resp <- apply(design,1,forretal,timepoints)
 
-nn <- 20
+nn <- 15
 gs <- sqrt(.Machine$double.eps)
 
 ## knnsvdGP with mutiple (5) start points for GP model estimation
