@@ -47,9 +47,9 @@ c=============================================================================
 c JN 20150118 change name setulb to lbfgsb3
 c      subroutine setulb(n, m, x, l, u, nbd, f, g, factr, pgtol, wa, iwa,
       subroutine lbfgsb3(n, m, x, l, u, nbd, f, g, factr, pgtol, wa,
-     +                iwa, itask, iprint, icsave, lsave, isave, dsave)
+     +                  iwa, itask, iprint, icsave, lsave, isave, dsave)
 c Berend noted earlier format beyond column 72
-      logical          lsave(4)
+      integer          lsave(4)
       integer          n, m, iprint, itask, icsave,
      +                 nbd(n), iwa(3*n), isave(44)
       double precision f, factr, pgtol, x(n), l(n), u(n), g(n),
@@ -307,7 +307,7 @@ c mainlb here
      +                  index, iwhere, indx2, itask,
      +                  iprint, icsave, lsave, isave, dsave)
       implicit none
-      logical          lsave(4)
+      integer          lsave(4)
       integer          n, m, iprint, itask, icsave, nbd(n), index(n),
      +                 iwhere(n), indx2(n), isave(23)
       double precision f, factr, pgtol,
@@ -594,10 +594,10 @@ c        The end of the initialization.
       else
 c          restore local variables.
 
-         prjctd = lsave(1)
-         cnstnd = lsave(2)
-         boxed  = lsave(3)
-         updatd = lsave(4)
+         prjctd = lsave(1) .eq. 1
+         cnstnd = lsave(2) .eq. 1
+         boxed  = lsave(3) .eq. 1
+         updatd = lsave(4) .eq. 1
 
          nintol = isave(1)
          itfile = isave(3)
@@ -915,7 +915,7 @@ c        Compute the infinity norm of the projected (-)gradient.
 
 c        Print iteration information.
 
-         call prn2lb(n,f,iprint,iter,
+         call prn2lb(f,iprint,iter,
      +               sbgnrm,word,iword,iback,xstep)
          goto 1000
       endif
@@ -1030,12 +1030,11 @@ cj    call timer(time2)
  1000 continue
 
 c     Save local variables.
-
-      lsave(1)  = prjctd
-      lsave(2)  = cnstnd
-      lsave(3)  = boxed
-      lsave(4)  = updatd
-
+      lsave(1) = MERGE(1, 0, prjctd)
+      lsave(2) = MERGE(1, 0, cnstnd)
+      lsave(3) = MERGE(1, 0, boxed)
+      lsave(4) = MERGE(1, 0, updatd)
+      
       isave(1)  = nintol
       isave(3)  = itfile
       isave(4)  = iback
@@ -2793,7 +2792,7 @@ c     ************
       double precision ddot
       double precision one
       parameter        (one=1.0d0)
-
+      external ddot
 c     Set pointers for matrices WS and WY.
 
       if (iupdat .le. m) then
@@ -2927,11 +2926,11 @@ cw     +        2x,'stepl',4x,'tstep',5x,'projg',8x,'f')
 
 c======================= The end of prn1lb =============================
 
-      subroutine prn2lb(n, f, iprint, iter,
+      subroutine prn2lb(f, iprint, iter,
      +                  sbgnrm, word, iword, iback, xstep)
 
       character(len=3) :: word
-      integer             n, iprint, iter,
+      integer             iprint, iter,
      +                    iword, iback
       double precision    f, sbgnrm, xstep
 

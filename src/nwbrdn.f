@@ -209,7 +209,7 @@ c          - calculate approximate gradient
 
             if( ierr .eq. 0 ) then
                call dcopy(n,qtf,1,gp,1)
-               call dtrmv('U','T','N',n,r,ldr,gp,1)
+               call mydtrmv('U','T','N',n,r,ldr,gp,1)
             endif
          endif
 c      - choose the next iterate xp by a global strategy
@@ -362,8 +362,8 @@ c     df = df - Q*(R*dx) (!not really needed if qrupdt were to be changed)
 c     do not update with noise
 
       call dcopy(n,dx,1,wa,1)
-      call dtrmv('U','N','N',n,r,ldr,wa,1)
-      call dgemv('N',n,n,-Rone,q,ldr,wa,1,Rone,df,1)
+      call mydtrmv('U','N','N',n,r,ldr,wa,1)
+      call mydgemv('N',n,n,-Rone,q,ldr,wa,1,Rone,df,1)
 
       do i=1,n
          if( abs(df(i)) .gt. eta*( abs(fp(i)) + abs(fc(i)) ) ) then
@@ -428,7 +428,7 @@ c-----------------------------------------------------------------------
       parameter(Rzero=0.0d0, Rone=1.0d0)
 
 c     form qtf = trans(Q) * fn
-      call dgemv('T',n,n,Rone,q,ldr,fn,1,Rzero,qtf,1)
+      call mydgemv('T',n,n,Rone,q,ldr,fn,1,Rzero,qtf,1)
 
       call lirslv(R,ldr,n,cndtol, stepadj,
      *                  qtf,dn,ierr,rcond, rcdwrk,icdwrk)

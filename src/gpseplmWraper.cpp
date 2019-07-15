@@ -1,11 +1,9 @@
 #include <cassert>
 #include <cstdlib>
 #include <R.h>
-#include "gp_sep.hpp"
 #include "gpseplm.hpp"
 #include "exceptions.hpp"
 using std::free;
-
 extern "C"{
 #include "matrix.h"
 }

@@ -13,8 +13,9 @@ extern "C"{
 #include "lbfgsb.h"
 }
 using std::free;
-#define SDEPS sqrt(DOUBLE_EPS)
 
+#define SDEPS sqrt(DOUBLE_EPS)
+  
 GPsepLm* newGPsepLm(const unsigned int m, const unsigned int n, double **X,
 		    double* Z, double *d, const double g, const int dK,
 		    const unsigned int p, double **H)
@@ -31,7 +32,7 @@ void deleteGPsepLm(GPsepLm* gplm)
   assert(gplm);
   if(gplm->gpsep) deleteGPsep(gplm->gpsep);
   if(gplm->H) delete_matrix(gplm->H);
-  if(gplm->beta) free(gplm->beta);
+  if(gplm->regcoef) free(gplm->regcoef);
   if(gplm->Kires) free(gplm->Kires);
   if(gplm->KiH) delete_matrix(gplm->KiH);
   if(gplm->Kernel) delete_matrix(gplm->Kernel);
@@ -60,9 +61,9 @@ void calc_HtKiH_sepLm(GPsepLm* gplm)
   }
   gplm->ldetHtKiH = log_determinant_chol(Chol,p);
   linalg_dgemv(CblasNoTrans,p,n,1.0,HtKiHiHtKi,p,gplm->gpsep->Z,
-	       1,0.0,gplm->beta,1);
+	       1,0.0,gplm->regcoef,1);
   resid = new_dup_vector(gplm->gpsep->Z,n);
-  linalg_dgemv(CblasTrans,p,n,-1.0,gplm->H,p,gplm->beta,1,1.0,resid,1);
+  linalg_dgemv(CblasTrans,p,n,-1.0,gplm->H,p,gplm->regcoef,1,1.0,resid,1);
 
   linalg_dsymv(n,1.0,gplm->gpsep->Ki,n,resid,1,0.0,gplm->Kires,1);
 
@@ -81,7 +82,7 @@ GPsepLm* buildGPsepLm(GPsepLm* gplm)
   p = gplm->p;
   gplm->KiH = new_matrix(n, p);
   gplm-> HtKiH = new_matrix(p,p);
-  gplm->beta = new_vector(p);
+  gplm->regcoef = new_vector(p);
   gplm->Kires = new_vector(n);
   gplm->Kernel = new_matrix(n,n);
   calc_HtKiH_sepLm(gplm);
@@ -551,7 +552,7 @@ void predGPsepLm_lite(GPsepLm* gplm, unsigned int nn, double **XX, double **HH,
   *df = (double) (n-p);
   new_predutilGPsep_lite(gpsep, nn, XX, &k, &ktKi, &ktKik);
   linalg_dgemv(CblasNoTrans,nn,n,1.0,k,nn,gplm->Kires,1,0.0,mean,1);
-  linalg_dgemv(CblasTrans,p,nn,1.0,HH,p,gplm->beta,1,1.0,mean,1);
+  linalg_dgemv(CblasTrans,p,nn,1.0,HH,p,gplm->regcoef,1,1.0,mean,1);
   if(sigma2)
   {
     Chol = new_dup_matrix(gplm->HtKiH,p,p);

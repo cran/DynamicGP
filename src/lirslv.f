@@ -53,7 +53,7 @@ c         solve Jacobian*dn  =  -fn
 c         ==> R*dn = - qtf
 
           call dcopy(n,qtf,1,dn,1)
-          call dtrsv('U','N','N',n,r,ldr,dn,1)
+          call mydtrsv('U','N','N',n,r,ldr,dn,1)
           call dscal(n, -Rone, dn, 1)
 
       elseif( stepadj ) then

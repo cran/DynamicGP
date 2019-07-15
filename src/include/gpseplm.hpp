@@ -4,11 +4,12 @@
 
 struct GPsepLm
 {
+  GPsepLm();
   GPsep* gpsep;
   unsigned int p;		/* number of regression covariates */
   double **H;			/* n \times p regression matrix */
-  double *beta;			/* p-vector regression coefficient */
-  double *Kires;		/* n-vector K^{-1}(Z-H\beta) */
+  double *regcoef;		/* p-vector regression coefficient */
+  double *Kires;		/* n-vector K^{-1}(Z-H\regcoef) */
   double **KiH;			/* n \times p matrix K^{-1}H */
   double **HtKiH;		/* p \times p matrix H^TK^{-1}H */
   double **Kernel;		/* n \times n matrix K^{-1}H(H^TK^{-1}H)^{-1}H^TK^{-1} */
@@ -46,5 +47,4 @@ void jmleGPsepLm(GPsepLm*, int, double*, double*,
 
 void predGPsepLm_lite(GPsepLm*, unsigned int, double**, double**,
 		      double*, double*, double*, double*);
-
 #endif

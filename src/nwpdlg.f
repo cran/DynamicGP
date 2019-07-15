@@ -83,7 +83,7 @@ c     steepest descent direction and length
       alpha   = sqalpha**2
 
       call dcopy(n, g, 1, d, 1)
-      call dtrmv('U','N','N',n,rjac,ldr,d,1)
+      call mydtrmv('U','N','N',n,rjac,ldr,d,1)
       beta = dnrm2(n,d,1)**2
 
       call dcopy(n, g, 1, ssd, 1)
@@ -112,7 +112,7 @@ c        find new step by single dogleg algorithm
 c        compute the model prediction 0.5*||F + J*d||**2 (L2-norm)
 
          call dcopy(n,d,1,wa,1)
-         call dtrmv('U','N','N',n,rjac,ldr,wa,1)
+         call mydtrmv('U','N','N',n,rjac,ldr,wa,1)
          call daxpy(n, Rone, qtf,1,wa,1)
          fpred = Rhalf * dnrm2(n,wa,1)**2
 

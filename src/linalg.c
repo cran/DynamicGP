@@ -1,4 +1,4 @@
-/********************************************************************************
+ /********************************************************************************
  *
  * Bayesian Regression and Adaptive Sampling with Gaussian Process Trees
  * Copyright (C) 2005, University of California
@@ -20,19 +20,13 @@
  * Questions? Contact Robert B. Gramacy (rbgramacy@ams.ucsc.edu)
  *
  ********************************************************************************/
-
-
 #include <stdlib.h>
 #include <assert.h>
 #include "linalg.h"
 #include "matrix.h"
 
-#ifdef FORTPACK
-char uplo = 'U';
-#endif
-
+const char uplo = 'U';
 const char jobz = 'S';
-/* #define DEBUG */
 
 /*
  * linalg_dtrsv:
@@ -40,70 +34,49 @@ const char jobz = 'S';
  * analog of dtrsv in cblas nad blas
  * assumed row-major lower-tri and non-unit
  */
-
 void linalg_dtrsv(TA, n, A, lda, Y, ldy)
 const enum CBLAS_TRANSPOSE TA;
 int n, lda, ldy;
 double **A;
 double *Y;
 {
-	#ifdef FORTBLAS
-	char ta;
-	char diag = 'N';
-	if(TA == CblasTrans) ta = 'T'; else ta = 'N';
-	dtrsv(&uplo, &ta, &diag, &n, *A, &lda, Y, &ldy);
-	#else
-	cblas_dtrsv(CblasRowMajor,CblasLower,TA,CblasNonUnit,
-    	/*cblas_dtrsv(CblasColMajor,CblasUpper,CblasNoTrans,CblasNonUnit,*/
-    		n,*A,lda,Y,ldy);
-	#endif
+  char ta;
+  char diag = 'N';
+  if(TA == CblasTrans) ta = 'T'; else ta = 'N';
+  F77_CALL(dtrsv)(&uplo, &ta, &diag, &n, *A, &lda, Y, &ldy);
 }
-
 
 /*
  * linalg_ddot:
  *
  * analog of ddot in cblas nad blas
  */
-
 double linalg_ddot(n, X, ldx, Y, ldy)
 int n, ldx, ldy;
 double *X, *Y;
 {
   double result;
-
-#ifdef FORTBLAS
-  size_t n64,ldx64,ldy64;
+  int n64,ldx64,ldy64;
   n64 = n; ldx64 = ldx; ldy64=ldy;
-  result = ddot(&n64,X,&ldx64,Y,&ldy64);
-#else
-  result = cblas_ddot(n, X, ldx, Y, ldy);
-#endif
+  result = F77_CALL(ddot)(&n64,X,&ldx64,Y,&ldy64);
   return result;
 }
-
 
 /*
  * linalg_daxpy:
  *
  * analog of daxpy in cblas nad blas
  */
-
 void linalg_daxpy(n,alpha,X,ldx,Y,ldy)
 int n, ldx, ldy;
 double alpha;
 double *X, *Y;
 {
-#ifdef FORTBLAS
-  size_t n64, ldx64, ldy64;
+  int n64, ldx64, ldy64;
   n64 = n; ldx64 = ldx; ldy64 = ldy;
   /* daxpy(&n,&alpha,X,&ldx,Y,&ldy); */
-  daxpy(&n64,&alpha,X,&ldx64,Y,&ldy64);
-#else
-  cblas_daxpy(n, alpha, X, ldx, Y, ldy);
-#endif
+  F77_CALL(daxpy)(&n64,&alpha,X,&ldx64,Y,&ldy64);
 }
-
 
 /*
  * linalg_dgemm:
@@ -111,24 +84,18 @@ double *X, *Y;
  * analog of dgemm in cblas nad blas
  * assumed column major representation
  */
-
 void linalg_dgemm(TA, TB, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
 const enum CBLAS_TRANSPOSE TA, TB;
 int m, n, k, lda, ldb, ldc;
 double alpha, beta;
 double **A, **B, **C;
 {
-#ifdef FORTBLAS
-  size_t m64, n64, k64, lda64, ldb64, ldc64;
+  int m64, n64, k64, lda64, ldb64, ldc64;
   char ta, tb;
   m64 = m; n64 = n; k64 = k; lda64 = lda; ldb64 = ldb; ldc64 = ldc;
   if(TA == CblasTrans) ta = 'T'; else ta = 'N';
   if(TB == CblasTrans) tb = 'T'; else tb = 'N';
-  /* dgemm(&ta,&tb,&m,&n,&k,&alpha,*A,&lda,*B,&ldb,&beta,*C,&ldc); */
-  dgemm(&ta,&tb,&m64,&n64,&k64,&alpha,*A,&lda64,*B,&ldb64,&beta,*C,&ldc64);
-#else
-  cblas_dgemm(CblasColMajor,TA,TB,m,n,k,alpha,*A,lda,*B,ldb,beta,*C,ldc);
-#endif
+  F77_CALL(dgemm)(&ta,&tb,&m64,&n64,&k64,&alpha,*A,&lda64,*B,&ldb64,&beta,*C,&ldc64);
 }
 
 
@@ -138,7 +105,6 @@ double **A, **B, **C;
  * analog of dgemv in cblas nad blas
  * assumed column major representation
  */
-
 void linalg_dgemv(TA, m, n, alpha, A, lda, X, ldx, beta, Y, ldy)
 const enum CBLAS_TRANSPOSE TA;
 int m, n, lda, ldx, ldy;
@@ -146,18 +112,13 @@ double alpha, beta;
 double **A;
 double *X, *Y;
 {
-#ifdef FORTBLAS
-  size_t m64, n64, lda64, ldx64, ldy64;
+  int m64, n64, lda64, ldx64, ldy64;
   char ta;
   m64 = m; n64 = n, lda64 = lda; ldx64 = ldx; ldy64 = ldy;
   if(TA == CblasTrans) ta = 'T'; else ta = 'N';
   /* dgemv(&ta,&m,&n,&alpha,*A,&lda,X,&ldx,&beta,Y,&ldy); */
-  dgemv(&ta,&m64,&n64,&alpha,*A,&lda64,X,&ldx64,&beta,Y,&ldy64);
-#else
-  cblas_dgemv(CblasColMajor,TA,m,n,alpha,*A,lda,X,ldx,beta,Y,ldy);
-#endif
+  F77_CALL(dgemv)(&ta,&m64,&n64,&alpha,*A,&lda64,X,&ldx64,&beta,Y,&ldy64);
 }
-
 
 /*
  * linalg_dsymm:
@@ -165,26 +126,19 @@ double *X, *Y;
  * analog of dsymm in cblas nad blas
  * assumed column major and upper-triangluar representation
  */
-
-
 void linalg_dsymm(SIDE, m, n, alpha, A, lda, B, ldb, beta, C, ldc)
 const enum CBLAS_SIDE SIDE;
 int m, n, lda, ldb, ldc;
 double alpha, beta;
 double **A, **B, **C;
 {
-#ifdef FORTBLAS
-  size_t m64, n64, lda64, ldb64, ldc64;
+  int m64, n64, lda64, ldb64, ldc64;
   char side;
   m64 = m; n64 = n; lda64 = lda; ldb64 = ldb; ldc64 = ldc;
   if(SIDE == CblasRight) side = 'R'; else side = 'L';
   /* dsymm(&side,&uplo,&m,&n,&alpha,*A,&lda,*B,&ldb,&beta,*C,&ldc); */
-  dsymm(&side,&uplo,&m64,&n64,&alpha,*A,&lda64,*B,&ldb64,&beta,*C,&ldc64);
-#else
-  cblas_dsymm(CblasColMajor,SIDE,CblasUpper,m,n,alpha,*A,lda,*B,ldb,beta,*C,ldc);
-#endif
+  F77_CALL(dsymm)(&side,&uplo,&m64,&n64,&alpha,*A,&lda64,*B,&ldb64,&beta,*C,&ldc64);
 }
-
 
 /*
  * linalg_dsymv:
@@ -192,23 +146,17 @@ double **A, **B, **C;
  * analog of dsymv in cblas and blas
  * assumed column major representation
  */
-
-
 void linalg_dsymv(n, alpha, A, lda, X, ldx, beta, Y, ldy)
 int n, lda, ldx, ldy;
 double alpha, beta;
 double **A;
 double *X, *Y;
 {
-#ifdef FORTBLAS
-  size_t n64, lda64, ldy64, ldx64;
+  int n64, lda64, ldy64, ldx64;
   n64 = n; lda64 = lda; ldx64 = ldx; ldy64 = ldy;
   /* dsymv(&uplo,&n,&alpha,*A,&lda,X,&ldx,&beta,Y,&ldy); */
 
-  dsymv(&uplo,&n64,&alpha,*A,&lda64,X,&ldx64,&beta,Y,&ldy64);
-#else
-  cblas_dsymv(CblasColMajor,CblasUpper,n,alpha,*A,lda,X,ldx,beta,Y,ldy);
-#endif
+  F77_CALL(dsymv)(&uplo,&n64,&alpha,*A,&lda64,X,&ldx64,&beta,Y,&ldy64);
 }
 
 /*
@@ -218,33 +166,16 @@ double *X, *Y;
  * Mutil is with colmajor and uppertri or rowmajor
  * and lowertri
  */
-
 int linalg_dposv(n, Mutil, Mi)
 int n;
 double **Mutil, **Mi;
 {
-  long info;
-
   /* then use LAPACK */
-#ifdef FORTPACK
-  size_t n64;
+  int n64, info;
   n64 = n;
-  dposv(&uplo,&n64,&n64,*Mutil,&n64,*Mi,&n64,&info);
-#else
-  /*info = clapack_dposv(CblasColMajor,CblasUpper,n,n,*Mutil,n,*Mi,n);*/
-  info = clapack_dposv(CblasRowMajor,CblasLower,n,n,*Mutil,n,*Mi,n);
-#endif
-
-/* #ifdef DEBUG */
-/*   if(info != 0) { */
-/*     matrix_to_file("M.dump", Mutil, n, n); */
-/*     error("offending matrix dumped into matrix.dump"); */
-/*   } */
-/* #endif */
-
+  F77_CALL(dposv)(&uplo,&n64,&n64,*Mutil,&n64,*Mi,&n64,&info);
   return (int) info;
 }
-
 
 /*
  * linalg_dgesv:
@@ -255,7 +186,6 @@ double **Mutil, **Mi;
  *
  * inverse_lu used this with RowMajor, other with ColMajor
  */
-
 int linalg_dgesv(n, Mutil, Mi)
 int n;
 double **Mutil, **Mi;
@@ -264,20 +194,10 @@ double **Mutil, **Mi;
 	int *p;
 
 	p = new_ivector(n);
-	#ifdef FORTPACK
-	dgesv(&n,&n,*Mutil,&n,p,*Mi,&n,&info);
-	#else
-	info = clapack_dgesv(CblasColMajor,n,n,*Mutil,n,p,*Mi,n);
-	/*info = clapack_dgesv(CblasRowMajor,n,n,*Mutil,n,p,*Mi,n);*/
-	#endif
+	F77_CALL(dgesv)(&n,&n,*Mutil,&n,p,*Mi,&n,&info);
 	free(p);
-	#ifdef DEBUG
-	assert(info == 0);
-	#endif
-
 	return info;
 }
-
 
 /*
  *
@@ -285,140 +205,34 @@ double **Mutil, **Mi;
  * var is with colmajor and uppertri or rowmajor
  * and lowertri
  */
-
 int linalg_dpotrf(n, var)
 int n;
 double **var;
 {
-  long info;
-
-#ifdef FORTPACK
-  size_t n64;
+  int n64, info;
   n64 = n;
-  dpotrf(&uplo,&n64,*var,&n64,&info);
-#else
-  info = clapack_dpotrf(CblasRowMajor,CblasLower,n,*var,n);
-  /*info = clapack_dpotrf(CblasColMajor,CblasUpper,n,*var,n);*/
-#endif
-#ifdef DEBUG
-  assert(info == 0);
-#endif
-
+  F77_CALL(dpotrf)(&uplo,&n64,*var,&n64,&info);
   return (int) info;
 }
-
-
-
-#ifndef FORTPACK
-/*
- * solve_cg_symm:
- *
- * solve Ax=b by inverting A and computing using the conjugate
- * gradient method from Skilling (also takes advantage of symmetry in C)
- * C[n][n] double u[n], y[n], y_star[n]
- */
-
-int solve_cg_symm(y, y_star, C, u, theta, n)
-unsigned int n;
-double **C;
-double *u, *y, *y_star;
-double theta;
-{
-	double g[n], g_star[n], h[n], h_star[n], Ch[n], Ch_star[n];
-	double Cy[n], Cy_star[n], Ag_star[n], ACh_star[n], Ay_star[n], CAy_star[n];
-	double **A;
-	double gamma, gamma_star, lambda, lambda_star, g_old_norm, g_old_norm_star, Q, Q_star, u_norm, upper;
-	unsigned int k, i, j;/*, iter;*/
-
-	A = new_matrix(n, n);
-	u_norm = linalg_ddot(n, u, 1, u, 1);
-
-	/* initialize */
-	for(i=0; i<n; i++) {
-		for(j=0; j<n; j++) A[i][j] = C[i][j];
-		A[i][i] -= theta;
-		y[i] = y_star[i] = 0;
-		g[i] = g_star[i] = h[i] = h_star[i] = u[i];
-		Cy[i] = Cy_star[i] = Ag_star[i] = ACh_star[i] = Ch[i] = Ch_star[i] = Ay_star[i] = CAy_star[i];
-	}
-	g_old_norm =  linalg_ddot(n, g, 1, g, 1);
-	linalg_dsymv(n,1.0,A,n,g_star,1,0.0,Ag_star,1);
-	g_old_norm_star =  linalg_ddot(n, g_star, 1, Ag_star, 1);
-
-	/* the main loop */
-	for(k=0; k<n; k++) {
-
-		/* Ch = C * h */
-		linalg_dsymv(n,1.0,C,n,h,1,0.0,Ch,1);
-		linalg_dsymv(n,1.0,C,n,h_star,1,0.0,Ch_star,1);
-
-		/* lambda = g^t * g / ( g^t * Ch) */
-		lambda = g_old_norm / linalg_ddot(n, g, 1, Ch, 1)  ;
-		lambda_star = g_old_norm / linalg_ddot(n, Ag_star, 1, Ch_star, 1)  ;
-
-		/* y = y + lambda * h */
-		for(i=0; i<n; i++) y[i] = y[i] + lambda * h[i];
-		for(i=0; i<n; i++) y_star[i] = y[i] + lambda_star * h_star[i];
-
-		/* Q = y^t*u - 0.5 y^t*C*y */
-		Q = linalg_ddot(n, y, 1, u, 1);
-		linalg_dsymv(n,1.0,C,n,y,1,0.0,Cy,1);
-		Q -= 0.5 * linalg_ddot(n, y, 1, Cy, 1);
-
-		/* Q_star = y_star^t*A*u - 0.5 y_star^t*C*A*y */
-		linalg_dsymv(n,1.0,A,n,y_star,1,0.0,Ay_star,1);
-		Q_star = linalg_ddot(n, Ay_star, 1, u, 1);
-		linalg_dsymv(n,1.0,C,n,Ay_star,1,0.0,CAy_star,1);
-		Q_star -= 0.5 * linalg_ddot(n, y_star, 1, CAy_star, 1);
-
-		/* see if we're close */
-		upper = (0.5*u_norm - Q_star)/theta;
-		if((upper - Q) / Q < 1e-6) break;
-
-		/* stuff for next round */
-
-		/* g = g - lambda * C * h */
-		for(i=0; i<n; i++) g[i] = g[i] - lambda * Ch[i];
-		for(i=0; i<n; i++) g_star[i] = g_star[i] - lambda_star * Ch_star[i];
-
-		/* gamma = (g*g) / g_old_norm */
-		gamma = 1.0 / g_old_norm;
-		g_old_norm = linalg_ddot(n, g, 1, g, 1);
-		gamma *= g_old_norm;
-		gamma_star = 1.0 / g_old_norm_star;
-		linalg_dsymv(n,1.0,A,n,g_star,1,0.0,Ag_star,1);
-		g_old_norm_star = linalg_ddot(n, g_star, 1, Ag_star, 1);
-		gamma_star *= g_old_norm_star;
-
-		/* h = g + gamma * h */
-		for(i=0; i<n; i++) h[i] = g[i] + gamma * h[i];
-		for(i=0; i<n; i++) h_star[i] = g_star[i] + gamma_star * h_star[i];
-	}
-
-	delete_matrix(A);
-	return k;
-}
-#endif
-
 
 int linalg_dgesdd(double **X, int nrow, int ncol,
 		   double *s, double *u, double **vt)
 {
   int info = 0, lwork = -1;
   int nsv = nrow<ncol? nrow : ncol;
-  int *iwork = (int *) malloc(8*(size_t)(nsv)*sizeof(int));
+  int *iwork = (int *) malloc(8*(int)(nsv)*sizeof(int));
   double tmp, *work;
 
-  dgesdd(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
-	 *vt,&nsv,&tmp,&lwork,iwork, &info);
+  F77_CALL(dgesdd)(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
+		   *vt,&nsv,&tmp,&lwork,iwork, &info);
   if(info != 0) return info;
 
   lwork = (int) tmp;
 
   work = (double*) malloc(lwork * sizeof(double));
 
-  dgesdd(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
-	 *vt,&nsv,work,&lwork,iwork,&info);
+  F77_CALL(dgesdd)(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
+		   *vt,&nsv,work,&lwork,iwork,&info);
   free(work);
   free(iwork);
   return info;
@@ -432,8 +246,9 @@ void linalg_dtrmv(const enum CBLAS_UPLO up, const enum CBLAS_TRANSPOSE tr,
   uplo = (up==CblasUpper)? 'U':'L';
   trans = (tr==CblasTrans)? 'T':'N';
   isdiag = (diag==CblasUnit)? 'U':'N';
-  dtrmv(&uplo, &trans, &isdiag, &n, *A, &lda, x, &incx);
+  F77_CALL(dtrmv)(&uplo, &trans, &isdiag, &n, *A, &lda, x, &incx);
 }
+
 void linalg_dtrsm(const enum CBLAS_SIDE side, const enum CBLAS_UPLO up,
 		  const enum CBLAS_TRANSPOSE tr, enum CBLAS_DIAG diag,
 		  int m, int n, double alpha, double **A, int lda,
@@ -444,26 +259,16 @@ void linalg_dtrsm(const enum CBLAS_SIDE side, const enum CBLAS_UPLO up,
   uplo = (up==CblasUpper)? 'U':'L';
   trans = (tr==CblasTrans)? 'T':'N';
   isdiag = (diag==CblasUnit)? 'U':'N';
-  dtrsm(&isleft, &uplo, &trans, &isdiag, &m, &n, &alpha, *A, &lda, b, &ldb);
+  F77_CALL(dtrsm)(&isleft, &uplo, &trans, &isdiag, &m, &n, &alpha, *A, &lda, b, &ldb);
 }
 
 int linalgext_dposv(n, m, Mutil, Mi)
   int n, m;
   double **Mutil, **Mi;
 {
-  long info;
-
-  /* then use LAPACK */
-#ifdef FORTPACK
-  size_t n64;
-  size_t m64;
+  int n64, m64, info;
   n64 = n;
   m64 = m;
-  dposv(&uplo,&n64,&m64,*Mutil,&n64,*Mi,&n64,&info);
-#else
-  /*info = clapack_dposv(CblasColMajor,CblasUpper,n,n,*Mutil,n,*Mi,n);*/
-  info = clapack_dposv(CblasRowMajor,CblasLower,n,m,*Mutil,n,*Mi,n);
-#endif
-
+  F77_CALL(dposv)(&uplo,&n64,&m64,*Mutil,&n64,*Mi,&n64,&info);
   return (int) info;
 }

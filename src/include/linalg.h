@@ -26,6 +26,8 @@
 #define __LINALG_H__
 
 #include "matrix.h"
+#include "R_ext/BLAS.h"
+#include "R_ext/Lapack.h"
 
 #ifndef CBLAS_ENUM_DEFINED_H
    #define CBLAS_ENUM_DEFINED_H
@@ -35,69 +37,6 @@
    enum CBLAS_DIAG  {CblasNonUnit=131, CblasUnit=132};
    enum CBLAS_SIDE  {CblasLeft=141, CblasRight=142};
 #endif
-
-#define FORTPACK
-#define FORTBLAS
-
-#ifdef FORTPACK
-#define dpotrf dpotrf_
-extern void dpotrf(char*, size_t*, double*, size_t*, long*);
-#define dposv dposv_
-/* extern void dposv(char *, int *, int *, double*, int *, double*, int *, int *); */
-extern void dposv(char *, size_t *, size_t *, double*, size_t*, double*, size_t*, long*);
-#define dgesv dgesv_
-extern void dgesv(int *,int *,double *,int*,int*,double*,int*,int*);
-#else
-#include <clapack.h>
-#endif
-
-#ifdef FORTBLAS
-#define dgemm dgemm_
-/* extern void dgemm(char*, char*,  int*, int*, int*, double*,
-   double*, int*, double*, int*, double*, double*, int*); */
-extern void dgemm(char*, char*,  size_t*, size_t*, size_t*, double*,
-		  double*, size_t*, double*, size_t*, double*, double*, size_t*);
-#define dsymm dsymm_
-/* extern void dsymm(char*, char*, int*, int*, double*,
-   double*, int*, double*, int*, double*, double*, int*); */
-extern void dsymm(char*, char*, size_t*, size_t*, double*,
-		  double*, size_t*, double*, size_t*, double*, double*, size_t*);
-#define dgemv dgemv_
-/* extern void dgemv(char*, int*, int*, double*, double*, int*,
-   double*, int*, double*, double*, int*); */
-extern long dgemv(char*, size_t*, size_t*, double*, double*, size_t*,
-                  double*, size_t*, double*, double*, size_t*);
-#define dsymv dsymv_
-/*extern void dsymv(char*, int*, double*, double*, int*,
-  double*, int*, double*, double*, int*); */
-extern void dsymv(char*, size_t*, double*, double*, size_t*,
-                  double*, size_t*, double*, double*, size_t*);
-#define ddot ddot_
-extern double ddot(size_t*, double*, size_t*, double*, size_t*);
-#define daxpy daxpy_
-/* extern void daxpy(int*, double*, double*, int*, double*, int*); */
-extern long daxpy(size_t*, double*, double*, size_t*, double*, size_t*);
-#define dtrsv dtrsv_
-extern long dtrsv(char*, char*, char*, int*, double*, int*, double*, int*);
-
-#define dtrmv dtrmv_
-extern long dtrmv(char* uplo, char* trans, char* diag,
-		  int *n, double* a, int *lda, double *x,
-		  int *incx);
-#define dtrsm dtrsm_
-extern void dtrsm(char* side, char* uplo, char* transa, char* diag,
-		  int* m, int *n, double *alpha, double* a, int *lda,
-		  double *b, int *ldb);
-#define dgesdd dgesdd_
-extern void dgesdd (const char *jobz,const int *m, const int *n,
-		    double *a, const int *lda, double *s, double *u, const int *ldu,
-		    double *vt, const int *ldvt, double *work, const int *lwork,
-		    int *iwork, int *info);
-
-#else
-#include <cblas.h>
-#endif
-
 
 void linalg_dtrsv(const enum CBLAS_TRANSPOSE TA, int n, double **A, int lda,
 		  double *Y, int ldy);
@@ -118,9 +57,6 @@ void linalg_dsymv(int n, double alpha, double **A, int lda,
 int linalg_dposv(int n, double **Mutil, double **Mi);
 int linalg_dgesv(int n, double **Mutil, double **Mi);
 int linalg_dpotrf(int n, double **var);
-
-/* iterative */
-int solve_cg_symm(double *x, double *x_star, double **A, double *b, double theta, unsigned int n);
 void linalg_dtrmv(const enum CBLAS_UPLO up, const enum CBLAS_TRANSPOSE tr,
 		  const enum CBLAS_DIAG diag, int n, double **A, int lda,
 		  double *x, int incx);
@@ -128,7 +64,6 @@ void linalg_dtrsm(const enum CBLAS_SIDE side, const enum CBLAS_UPLO up,
 		  const enum CBLAS_TRANSPOSE tr, enum CBLAS_DIAG diag,
 		  int m, int n, double alpha, double **A, int lda,
 		  double *b, int ldb);
-
 int linalg_dgesdd(double **, int, int, double *, double *, double **);
 int linalgext_dposv(int n, int m, double **Mutil, double **Mi);
 #endif

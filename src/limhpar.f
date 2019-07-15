@@ -59,7 +59,7 @@ c-----------------------------------------------------------------------------
       call dscal(n, Rone/dnlen, d, 1)
 
 c     solve R**T * x = dn
-      call dtrsv("U","T","N",n,R,ldr,d,1)
+      call mydtrsv("U","T","N",n,R,ldr,d,1)
       qnorm = dnrm2(n,d,1)
       mulo = (phi/dnlen)/qnorm**2
       mu = mulo

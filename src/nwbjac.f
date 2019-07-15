@@ -95,7 +95,7 @@ c     if requested calculate x scale from jacobian column norms a la Minpack
 
 c     evaluate the gradient at the current iterate xc
 c     gp = trans(Rjac) * fc
-      call dgemv('T',n,n,Rone,rjac,ldr,fc,1,Rzero,gp,1)
+      call mydgemv('T',n,n,Rone,rjac,ldr,fc,1,Rzero,gp,1)
 
 c     get broyden (newton) step
       stepadj = jacflg(4) .eq. 1
