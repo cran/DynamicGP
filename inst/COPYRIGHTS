@@ -37,3 +37,6 @@ Files: src/lautil.f src/limhpar.f src/liqrev.f src/liqrup.f src/lirslv.f
        src/nwpure.f src/nwqlsh.f src/nwtrup.f src/nwutil.f src/nwout.c
 Author(s): Berend Hasselman
 Licence: GPL>=2
+
+Files: src/mydgemv.f src/mydtrmv.f
+Author(s): Jack Dongarra, Jeremy Du Croz, Sven Hammarling, Richard Hanson
