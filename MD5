@@ -1,4 +1,4 @@
-f69b430bee450d2c05a81ea97ae508db *DESCRIPTION
+48031ccb84cd391ee0a5d634397fe0aa *DESCRIPTION
 8aea64f71d1019a9f4b5735cd224ae99 *NAMESPACE
 75f9d131997b223fb7839b9f0eb9f1e4 *R/apply.r
 26d5487a831c9d905e95b6789c96933a *R/esl2d.r
@@ -50,7 +50,7 @@ cb665b6032bdea87a1b2bb2f9e91b5b2 *src/include/cpputil.hpp
 eecb62d0b21b444ec0ceb5c29c3ce8cf *src/lasvdgp.cpp
 2b0b344bfc5b18ce19f57de31af52898 *src/lasvdgpms.cpp
 d0778920b083eb3157775476af780c62 *src/lautil.f
-2f9f34d46b6cd844773f023f29947f62 *src/lbfgsb.f
+17001941088cf79a33ba23b6aba8cac9 *src/lbfgsb.f
 5cb9b19502d3aca175d92daa8f033d7f *src/lbfgsb_c.c
 4bc827dbd6a694fbadbddc02678a1d32 *src/limhpar.f
 405b052263c9c15d36de28fb3f7fb35e *src/linalg.c
@@ -60,8 +60,8 @@ d0778920b083eb3157775476af780c62 *src/lautil.f
 5d8383b27ec47b8e7c0ee0b28c112092 *src/matrix.c
 de153ce95f4f07ec23d0b3029dfec371 *src/maximinLHS.c
 3cb7d19da20259fd9e248f0d3e2642e6 *src/mydgemv.f
-cb20300e013421b4249d4f0f486a3034 *src/mydtrmv.f
-ad18c4c95a3c26f054db8e2e76f3a8c0 *src/mydtrsv.f
+8ba60be0c4d2e9489766dc6d8b667c43 *src/mydtrmv.f
+bafcbeb894f018ada6fde903472cc837 *src/mydtrsv.f
 97159bb8de926e4add876dbbcd52af25 *src/nleqslv.c
 dab92341f3b39aa46236b2d3bf532953 *src/nwbjac.f
 68330eaa577b345dfb7b6a3df7c4a936 *src/nwbrdn.f
@@ -81,6 +81,7 @@ e4236f110e2aad1093ae638065fc3c2b *src/nwutil.f
 732eca95efa82803005b07363c3c5e09 *src/oeiinfo.c
 bea4ffe4f6c31d3f83b1fd35e01bae38 *src/random.c
 319dd60d7908fd83b3736a15abf2adc1 *src/registration.c
+6434dacde5adde5e94b7375b26055da5 *src/sdblepr.f
 3fc355272a3ea35f446ddf790c594653 *src/timer.f
 2e24cc55f1523b5eac3c50bcf0081b13 *src/util.c
 524c6abd4cb796202608d00141fb74f7 *src/utilWraper.c

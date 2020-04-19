@@ -123,6 +123,7 @@
 *
 *     Test the input parameters.
 *
+      KX = 0
       INFO = 0
       IF (.NOT.LSAME(UPLO,'U') .AND. .NOT.LSAME(UPLO,'L')) THEN
           INFO = 1

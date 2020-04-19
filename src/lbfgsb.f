@@ -672,8 +672,8 @@ c     Compute the infinity norm of the (-) projected gradient.
 
       if (iprint .ge. 1) then
          call intpr("At iterate", -1, iter, 1)
-         call dblepr(" f=",-1, f, 1)
-         call dblepr(" |proj g|= ",-1, sbgnrm, 1)
+         call sdblepr(" f=",-1, f)
+         call sdblepr(" |proj g|= ",-1, sbgnrm)
 cw         write (6,1002) iter,f,sbgnrm
 cw 1002 format
 cw     +  (/,'At iterate',i5,4x,'f= ',1p,d12.5,4x,'|proj g|= ',1p,d12.5)
@@ -961,8 +961,8 @@ c                            skip the L-BFGS update.
          updatd = .false.
 cw         if (iprint .ge. 1) write (6,1004) dr, ddum
          if (iprint .ge. 1) then
-           call dblepr(' ys =',-1, dr, 1)
-           call dblepr(' BFGS update skipped for +gs=',-1, ddum, 1)
+           call sdblepr(' ys =',-1, dr)
+           call sdblepr(' BFGS update skipped for +gs=',-1, ddum)
          endif
 cw 1004 format ('  ys=',1p,e10.3,'  -gs=',1p,e10.3,' BFGS update SKIPPED')
          goto 888
@@ -1537,6 +1537,8 @@ cw         if (iprint .ge. 0) write (6,*) 'Subgnorm = 0.  GCP = X.'
       bkmin = zero
       col2 = 2*col
       f1 = zero
+      tu = zero
+      tl = zero
 cw      if (iprint .ge. 99) write (6,3010)
       if (iprint .ge. 99) then
         call intpr('--- CAUCHY entered---',-1,0,0)
@@ -1706,13 +1708,13 @@ c           (if iter=2, initialize heap).
       if (dt .ne. zero .and. iprint .ge. 100) then
 cw         write (6,4011) nseg,f1,f2
          call intpr('Piece ',-1, nseg, 1)
-         call dblepr('f1 at start point =',-1, f1, 1)
-         call dblepr('f2 at start point =',-1, f1, 1)
+         call sdblepr('f1 at start point =',-1, f1)
+         call sdblepr('f2 at start point =',-1, f1)
 cw         write (6,5010) dt
-         call dblepr('Distance to the next break point =  ',
-     +  -1, dt, 1)
-         call dblepr('Distance to the stationary point =  ',
-     +  -1, dtm, 1)
+         call sdblepr('Distance to the next break point =  ',
+     +  -1, dt)
+         call sdblepr('Distance to the stationary point =  ',
+     +  -1, dtm)
 cw         write (6,6010) dtm
       endif
 
@@ -1807,11 +1809,11 @@ cw         write (6,*)
 cw         write (6,*) 'GCP found in this segment'
 cw         write (6,4010) nseg,f1,f2
          call intpr('Piece ',-1, nseg, 1)
-         call dblepr('f1 at start point =',-1, f1, 1)
-         call dblepr('f2 at start point =',-1, f1, 1)
+         call sdblepr('f1 at start point =',-1, f1)
+         call sdblepr('f2 at start point =',-1, f1)
 cw         write (6,6010) dtm
-         call dblepr('Distance to the stationary point =  ',
-     +  -1, dtm, 1)
+         call sdblepr('Distance to the stationary point =  ',
+     +  -1, dtm)
 
       endif
       if (dtm .le. zero) dtm = zero
@@ -2879,8 +2881,8 @@ c  limit output to 1st 5 elements
       if (iprint .ge. 0) then
          if (iprint .ge. 1) then
 cw         write (6,7001) epsmch
-         call dblepr('RUNNING THE L-BFGS-B CODE with eps=',
-     +     -1, epsmch, 1)
+         call sdblepr('RUNNING THE L-BFGS-B CODE with eps=',
+     +     -1, epsmch)
 cw         write (6,*) 'N = ',n,'    M = ',m
          call intpr(' N =',-1, n, 1)
          call intpr(' M =',-1, m, 1)
@@ -2972,11 +2974,11 @@ c                             the truncated Newton step has been used.
       if (iprint .ge. 99) then
 cw         write (6,*) 'LINE SEARCH',iback,' times; norm of step = ',xstep
          call intpr('LINE SEARCH iback=',-1, iback, 1)
-         call dblepr('norm of step =',-1, xstep, 1)
+         call sdblepr('norm of step =',-1, xstep)
 cw         write (6,2001) iter,f,sbgnrm
          call intpr('At iterate ',-1, iter, 1)
-         call dblepr('f =',-1, f, 1)
-         call dblepr('|proj g| =',-1, sbgnrm, 1)
+         call sdblepr('f =',-1, f)
+         call sdblepr('|proj g| =',-1, sbgnrm)
          if (iprint .gt. 100) then
 cw            write (6,1004) 'X =',(x(i), i = 1, n)
 cw            write (6,1004) 'G =',(g(i), i = 1, n)
@@ -3061,7 +3063,7 @@ cw            write (6,1004) 'X =',(x(i),i = 1,n)
 cw 1004 format (/,a4, 1p, 6(1x,d11.4),/,(4x,1p,6(1x,d11.4)))
          endif
 cw       if (iprint .ge. 1) write (6,*) ' F =',f
-         if (iprint .ge. 1) call dblepr(' F =',-1,f, 1)
+         if (iprint .ge. 1) call sdblepr(' F =',-1,f)
       endif
  999  continue
       if (iprint .ge. 0) then
