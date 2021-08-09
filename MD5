@@ -1,4 +1,4 @@
-48031ccb84cd391ee0a5d634397fe0aa *DESCRIPTION
+b726c38ed78a5053cedfd7349725b162 *DESCRIPTION
 8aea64f71d1019a9f4b5735cd224ae99 *NAMESPACE
 75f9d131997b223fb7839b9f0eb9f1e4 *R/apply.r
 26d5487a831c9d905e95b6789c96933a *R/esl2d.r
@@ -29,7 +29,7 @@ e98de08f1199c5c7fe700806af0f90ab *src/Makevars.win
 3dc64e77a75a3acb2ec5259d4866cc46 *src/covar_sep.c
 1a0ea9145e5753b16cd6592f38d99e6a *src/cpputil.cpp
 811855a38a48ae68a2e705dce9469673 *src/exceptions.cpp
-a0ad834fad8f62d578cb8d62ed9b4f4d *src/gp_sep.cpp
+7fde48a77c76c3a6c9d9d9f229ffc90a *src/gp_sep.cpp
 11a37ed1327d4736baecac8273b4b3bd *src/gpsepWraper.cpp
 1278a924acd1b4fdbec624aa4fabe138 *src/gpseplm.cpp
 d9eaf061fbb0c344ff86c737d4ab35cc *src/gpseplmWraper.cpp

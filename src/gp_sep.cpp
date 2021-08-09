@@ -930,7 +930,10 @@ void predGPsep_lite(GPsep* gpsep, unsigned int nn, double **XX, double *mean,
   /* *df = n - m - 1.0; */  /* only if estimating beta */
   if(sigma2) {
     phidf = gpsep->phi/(*df);
-    for(i=0; i<nn; i++) sigma2[i] = phidf * (1.0 + gpsep->g - ktKik[i]);
+    for(i=0; i<nn; i++) {
+      sigma2[i] = phidf * (1.0 + gpsep->g - ktKik[i]);
+      if(sigma2[i] < 0.0) sigma2[i] = 0.0;
+    }
   }
 
   /* calculate marginal likelihood (since we have the bits) */
