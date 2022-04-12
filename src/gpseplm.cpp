@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cassert>
 #include <cstdlib>
+#include <cfloat>
 #include <R.h>
 #include <Rmath.h>
 #include "gpseplm.hpp"
@@ -14,7 +15,7 @@ extern "C"{
 }
 using std::free;
 
-#define SDEPS sqrt(DOUBLE_EPS)
+#define SDEPS sqrt(DBL_EPSILON)
   
 GPsepLm* newGPsepLm(const unsigned int m, const unsigned int n, double **X,
 		    double* Z, double *d, const double g, const int dK,

@@ -26,6 +26,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <cmath>
+#include <cfloat>
 #include <R.h>
 #include <Rmath.h>
 #include "exceptions.hpp"
@@ -38,7 +39,7 @@ extern "C"{
 }
 using std::free;
 
-#define SDEPS sqrt(DOUBLE_EPS)
+#define SDEPS sqrt(DBL_EPSILON)
 
 void deletedKGPsep(GPsep *gpsep)
 {

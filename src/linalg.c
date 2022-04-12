@@ -43,7 +43,7 @@ double *Y;
   char ta;
   char diag = 'N';
   if(TA == CblasTrans) ta = 'T'; else ta = 'N';
-  F77_CALL(dtrsv)(&uplo, &ta, &diag, &n, *A, &lda, Y, &ldy);
+  F77_CALL(dtrsv)(&uplo, &ta, &diag, &n, *A, &lda, Y, &ldy FCONE FCONE FCONE);
 }
 
 /*
@@ -95,7 +95,7 @@ double **A, **B, **C;
   m64 = m; n64 = n; k64 = k; lda64 = lda; ldb64 = ldb; ldc64 = ldc;
   if(TA == CblasTrans) ta = 'T'; else ta = 'N';
   if(TB == CblasTrans) tb = 'T'; else tb = 'N';
-  F77_CALL(dgemm)(&ta,&tb,&m64,&n64,&k64,&alpha,*A,&lda64,*B,&ldb64,&beta,*C,&ldc64);
+  F77_CALL(dgemm)(&ta,&tb,&m64,&n64,&k64,&alpha,*A,&lda64,*B,&ldb64,&beta,*C,&ldc64 FCONE FCONE);
 }
 
 
@@ -117,7 +117,7 @@ double *X, *Y;
   m64 = m; n64 = n, lda64 = lda; ldx64 = ldx; ldy64 = ldy;
   if(TA == CblasTrans) ta = 'T'; else ta = 'N';
   /* dgemv(&ta,&m,&n,&alpha,*A,&lda,X,&ldx,&beta,Y,&ldy); */
-  F77_CALL(dgemv)(&ta,&m64,&n64,&alpha,*A,&lda64,X,&ldx64,&beta,Y,&ldy64);
+  F77_CALL(dgemv)(&ta,&m64,&n64,&alpha,*A,&lda64,X,&ldx64,&beta,Y,&ldy64 FCONE);
 }
 
 /*
@@ -137,7 +137,7 @@ double **A, **B, **C;
   m64 = m; n64 = n; lda64 = lda; ldb64 = ldb; ldc64 = ldc;
   if(SIDE == CblasRight) side = 'R'; else side = 'L';
   /* dsymm(&side,&uplo,&m,&n,&alpha,*A,&lda,*B,&ldb,&beta,*C,&ldc); */
-  F77_CALL(dsymm)(&side,&uplo,&m64,&n64,&alpha,*A,&lda64,*B,&ldb64,&beta,*C,&ldc64);
+  F77_CALL(dsymm)(&side,&uplo,&m64,&n64,&alpha,*A,&lda64,*B,&ldb64,&beta,*C,&ldc64 FCONE FCONE);
 }
 
 /*
@@ -156,7 +156,7 @@ double *X, *Y;
   n64 = n; lda64 = lda; ldx64 = ldx; ldy64 = ldy;
   /* dsymv(&uplo,&n,&alpha,*A,&lda,X,&ldx,&beta,Y,&ldy); */
 
-  F77_CALL(dsymv)(&uplo,&n64,&alpha,*A,&lda64,X,&ldx64,&beta,Y,&ldy64);
+  F77_CALL(dsymv)(&uplo,&n64,&alpha,*A,&lda64,X,&ldx64,&beta,Y,&ldy64 FCONE);
 }
 
 /*
@@ -173,7 +173,7 @@ double **Mutil, **Mi;
   /* then use LAPACK */
   int n64, info;
   n64 = n;
-  F77_CALL(dposv)(&uplo,&n64,&n64,*Mutil,&n64,*Mi,&n64,&info);
+  F77_CALL(dposv)(&uplo,&n64,&n64,*Mutil,&n64,*Mi,&n64,&info FCONE);
   return (int) info;
 }
 
@@ -211,7 +211,7 @@ double **var;
 {
   int n64, info;
   n64 = n;
-  F77_CALL(dpotrf)(&uplo,&n64,*var,&n64,&info);
+  F77_CALL(dpotrf)(&uplo,&n64,*var,&n64,&info FCONE);
   return (int) info;
 }
 
@@ -224,7 +224,7 @@ int linalg_dgesdd(double **X, int nrow, int ncol,
   double tmp, *work;
 
   F77_CALL(dgesdd)(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
-		   *vt,&nsv,&tmp,&lwork,iwork, &info);
+		   *vt,&nsv,&tmp,&lwork,iwork, &info FCONE);
   if(info != 0) return info;
 
   lwork = (int) tmp;
@@ -232,7 +232,7 @@ int linalg_dgesdd(double **X, int nrow, int ncol,
   work = (double*) malloc(lwork * sizeof(double));
 
   F77_CALL(dgesdd)(&jobz,&nrow,&ncol,*X,&nrow,s,u,&nrow,
-		   *vt,&nsv,work,&lwork,iwork,&info);
+		   *vt,&nsv,work,&lwork,iwork,&info FCONE);
   free(work);
   free(iwork);
   return info;
@@ -246,7 +246,7 @@ void linalg_dtrmv(const enum CBLAS_UPLO up, const enum CBLAS_TRANSPOSE tr,
   uplo = (up==CblasUpper)? 'U':'L';
   trans = (tr==CblasTrans)? 'T':'N';
   isdiag = (diag==CblasUnit)? 'U':'N';
-  F77_CALL(dtrmv)(&uplo, &trans, &isdiag, &n, *A, &lda, x, &incx);
+  F77_CALL(dtrmv)(&uplo, &trans, &isdiag, &n, *A, &lda, x, &incx FCONE FCONE FCONE);
 }
 
 void linalg_dtrsm(const enum CBLAS_SIDE side, const enum CBLAS_UPLO up,
@@ -259,7 +259,8 @@ void linalg_dtrsm(const enum CBLAS_SIDE side, const enum CBLAS_UPLO up,
   uplo = (up==CblasUpper)? 'U':'L';
   trans = (tr==CblasTrans)? 'T':'N';
   isdiag = (diag==CblasUnit)? 'U':'N';
-  F77_CALL(dtrsm)(&isleft, &uplo, &trans, &isdiag, &m, &n, &alpha, *A, &lda, b, &ldb);
+  F77_CALL(dtrsm)(&isleft, &uplo, &trans, &isdiag, &m, &n, &alpha, *A, &lda, b, &ldb
+		  FCONE FCONE FCONE FCONE);
 }
 
 int linalgext_dposv(n, m, Mutil, Mi)
@@ -269,6 +270,6 @@ int linalgext_dposv(n, m, Mutil, Mi)
   int n64, m64, info;
   n64 = n;
   m64 = m;
-  F77_CALL(dposv)(&uplo,&n64,&m64,*Mutil,&n64,*Mi,&n64,&info);
+  F77_CALL(dposv)(&uplo,&n64,&m64,*Mutil,&n64,*Mi,&n64,&info FCONE);
   return (int) info;
 }

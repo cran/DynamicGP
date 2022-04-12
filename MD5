@@ -1,4 +1,4 @@
-b726c38ed78a5053cedfd7349725b162 *DESCRIPTION
+17e46bff3bca4c76678401f34c95a20f *DESCRIPTION
 8aea64f71d1019a9f4b5735cd224ae99 *NAMESPACE
 75f9d131997b223fb7839b9f0eb9f1e4 *R/apply.r
 26d5487a831c9d905e95b6789c96933a *R/esl2d.r
@@ -29,9 +29,9 @@ e98de08f1199c5c7fe700806af0f90ab *src/Makevars.win
 3dc64e77a75a3acb2ec5259d4866cc46 *src/covar_sep.c
 1a0ea9145e5753b16cd6592f38d99e6a *src/cpputil.cpp
 811855a38a48ae68a2e705dce9469673 *src/exceptions.cpp
-7fde48a77c76c3a6c9d9d9f229ffc90a *src/gp_sep.cpp
+863589b4e9807b2ebe41bc6de06e24c1 *src/gp_sep.cpp
 11a37ed1327d4736baecac8273b4b3bd *src/gpsepWraper.cpp
-1278a924acd1b4fdbec624aa4fabe138 *src/gpseplm.cpp
+f3d40122db69e59691d7bb396ebcfa28 *src/gpseplm.cpp
 d9eaf061fbb0c344ff86c737d4ab35cc *src/gpseplmWraper.cpp
 8696518391c47e5f69837eedc139b160 *src/include/covar_sep.h
 cb665b6032bdea87a1b2bb2f9e91b5b2 *src/include/cpputil.hpp
@@ -46,14 +46,14 @@ cb665b6032bdea87a1b2bb2f9e91b5b2 *src/include/cpputil.hpp
 41d4dff546485528b293b34076a62096 *src/include/nleqslv.h
 07f86cc1d4e62bc98dea052c57f652e6 *src/include/oeiinfo.h
 4515e5c0e8d189ee25a7ecd3cfe74746 *src/include/random.h
-9f1b456baf07b35690f7719590a06ffd *src/include/util.h
+e89459fd0734a4d94d88cd7ccc20dc61 *src/include/util.h
 eecb62d0b21b444ec0ceb5c29c3ce8cf *src/lasvdgp.cpp
 2b0b344bfc5b18ce19f57de31af52898 *src/lasvdgpms.cpp
 d0778920b083eb3157775476af780c62 *src/lautil.f
 17001941088cf79a33ba23b6aba8cac9 *src/lbfgsb.f
 5cb9b19502d3aca175d92daa8f033d7f *src/lbfgsb_c.c
 4bc827dbd6a694fbadbddc02678a1d32 *src/limhpar.f
-405b052263c9c15d36de28fb3f7fb35e *src/linalg.c
+c2ac31bc3813898eb54cacc13cc40ae0 *src/linalg.c
 1093a009194af2ab7a90f3fc604ffe82 *src/liqrev.f
 8487fc1caf0589858886d6c3674bdb93 *src/liqrup.f
 591c2f28280d81b153e0dd6e0f2ec688 *src/lirslv.f
@@ -83,5 +83,5 @@ bea4ffe4f6c31d3f83b1fd35e01bae38 *src/random.c
 319dd60d7908fd83b3736a15abf2adc1 *src/registration.c
 6434dacde5adde5e94b7375b26055da5 *src/sdblepr.f
 3fc355272a3ea35f446ddf790c594653 *src/timer.f
-2e24cc55f1523b5eac3c50bcf0081b13 *src/util.c
+ddf0b844336de3b10872403cf0863d24 *src/util.c
 524c6abd4cb796202608d00141fb74f7 *src/utilWraper.c
