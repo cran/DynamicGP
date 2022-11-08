@@ -294,8 +294,8 @@ static void fcnndllik_sepLm(int n, double *p, double *df, struct callinfo_sepLm 
 }
 
 void mleGPsepLm(GPsepLm* gplm, double *dmin, double *dmax, double *ab,
-		 const unsigned int maxit, int verb, double *p, int *its,
-		 char *msg, int *conv)
+		const unsigned int maxit, int verb, double *p, int *its,
+		char *msg, unsigned int msg_size, int *conv)
 {
   int lbfgs_verb;
   unsigned int k;
@@ -332,7 +332,7 @@ void mleGPsepLm(GPsepLm* gplm, double *dmin, double *dmax, double *ab,
   rmse = 0.0;
   for(k=0; k<gpsep->m; k++) rmse += sq(p[k] - dold[k]);
   if(sqrt(rmse/k) < SDEPS) {
-    sprintf(msg, "lbfgs initialized at minima");
+    snprintf(msg, msg_size, "lbfgs initialized at minima");
     *conv = 0;
     its[0] = its[1] = 0;
   }
@@ -525,7 +525,7 @@ void jmleGPsepLm(GPsepLm *gplm, int maxit, double *dmin, double *dmax,
   /* loop over coordinate-wise iterations */
   *dits = *gits = 0;
   for(i=0; i<100; i++) {
-    mleGPsepLm(gplm, dmin, dmax, dab, maxit, verb, d, dit, msg, dconv);
+    mleGPsepLm(gplm, dmin, dmax, dab, maxit, verb, d, dit, msg, 60, dconv);
     if(dit[1] > dit[0]) dit[0] = dit[1];
     *dits += dit[0];
     mleGPsepLm_nug(gplm, grange[0], grange[1], gab, verb, &git);

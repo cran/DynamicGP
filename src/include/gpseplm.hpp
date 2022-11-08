@@ -35,8 +35,8 @@ void dllikGPsepLm_nug(GPsepLm*, double*, double*, double*);
 void newparamsGPsepLm(GPsepLm*, double*, const double);
 
 void mleGPsepLm(GPsepLm*, double *, double *, double *,
-		 const unsigned int, int, double*, int *,
-		 char*, int *);
+		const unsigned int, int, double*, int *,
+		char*, unsigned int, int *);
 
 double mleGPsepLm_nug(GPsepLm*, double, double, double*,
 		       int, int*);

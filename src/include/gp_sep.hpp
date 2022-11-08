@@ -72,7 +72,7 @@ void mleGPsep_nug_R(int *gpsepi_in, int *verb_in, double *tmin_in,
        double *tmax_in, double *ab_in, double *mle_out, int *its_out);
 void mymleGPsep(GPsep* gpsep, double* dmin, double *dmax, double *ab,
 		const unsigned int maxit, int verb, double *p, int *its,
-		char *msg, int *conv);
+		char *msg, unsigned int, int *conv);
 void myjmleGPsep(GPsep *gpsep, int maxit, double *dmin, double *dmax,
 		 double *grange, double *dab, double *gab, int verb,
 		 int *dits, int *gits, int *dconv);
